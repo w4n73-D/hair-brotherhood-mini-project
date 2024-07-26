@@ -1,0 +1,51 @@
+export const barberShops = [
+    {
+      id: 1,
+      name: 'Urban Barber Shop',
+      location: 'Downtown',
+      rating: 4.5,
+      price: '$20',
+      imageUrl: '/shop1.jpg',
+    },
+    {
+      id: 2,
+      name: 'Classic Cuts',
+      location: 'Uptown',
+      rating: 4.0,
+      price: '$25',
+      imageUrl: '/shop2.jpg',
+    },
+    {
+        id: 2,
+        name: 'Polished Chic',
+        location: 'Uptown',
+        rating: 4.0,
+        price: '$25',
+        imageUrl: '/shop2.jpg',
+      },
+      {
+        id: 2,
+        name: 'Classic Cuts',
+        location: 'Uptown',
+        rating: 4.0,
+        price: '$25',
+        imageUrl: '/shop2.jpg',
+      },
+      {
+        id: 2,
+        name: 'Classic Cuts',
+        location: 'Uptown',
+        rating: 4.0,
+        price: '$25',
+        imageUrl: '/shop2.jpg',
+      },
+      {
+        id: 2,
+        name: 'Classic Cuts',
+        location: 'Uptown',
+        rating: 4.0,
+        price: '$25',
+        imageUrl: '/shop2.jpg',
+      },
+    // Add more shops as needed
+  ];

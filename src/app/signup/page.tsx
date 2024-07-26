@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -9,7 +9,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [showForm, setShowForm] = useState(false);
 
-  const handleEmailChange = (e) => {
+  const handleEmailChange = (e: { target: { value: SetStateAction<string>; }; }) => {
     setEmail(e.target.value);
   };
 
@@ -19,6 +19,12 @@ export default function SignupPage() {
     } else {
       alert('Please enter a valid email address.');
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Simulate successful signup and redirect to home page
+    router.push('/home');
   };
 
   return (
@@ -74,7 +80,7 @@ export default function SignupPage() {
             <h1 className="text-3xl font-bold mb-2">Create account</h1>
             <h3 className="text-xl mb-6">You're almost there! Create your new account for {email}</h3>
 
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
                   First name *
@@ -84,6 +90,7 @@ export default function SignupPage() {
                   id="firstName"
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   placeholder="First name"
+                  required
                 />
               </div>
               <div className="mb-4">
@@ -95,6 +102,7 @@ export default function SignupPage() {
                   id="lastName"
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   placeholder="Last name"
+                  required
                 />
               </div>
               <div className="mb-4">
@@ -106,6 +114,7 @@ export default function SignupPage() {
                   id="password"
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   placeholder="Password"
+                  required
                 />
               </div>
               <div className="mb-4">
@@ -117,6 +126,7 @@ export default function SignupPage() {
                   id="mobileNumber"
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   placeholder="Mobile number"
+                  required
                 />
               </div>
               <div className="mb-4">
@@ -124,6 +134,7 @@ export default function SignupPage() {
                   type="checkbox"
                   id="terms"
                   className="mr-2"
+                  required
                 />
                 <label className="text-gray-700 text-sm font-bold" htmlFor="terms">
                   I agree to the Privacy Policy, Terms of Use, and Terms of Service
