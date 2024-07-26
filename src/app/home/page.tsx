@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { barberShops, newBarberShops } from '../data/shops';
+import { barberShops, newBarberShops } from '../data/shops'; // Ensure this path is correct
 
 export default function HomePage() {
   const [search, setSearch] = useState('');
