@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { barberShops, newBarberShops, favBarberShops } from '../data/shops'; // Ensure this path is correct
 
 export default function HomePage() {
@@ -13,12 +14,12 @@ export default function HomePage() {
   const itemsPerPage = 3;
   const [isSearchSticky, setIsSearchSticky] = useState(false);
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     filterShops(e.target.value);
   };
 
-  const filterShops = (query) => {
+  const filterShops = (query: string) => {
     const filtered = barberShops.filter(shop =>
       shop.name.toLowerCase().includes(query.toLowerCase()) ||
       shop.location.toLowerCase().includes(query.toLowerCase())
@@ -128,18 +129,20 @@ export default function HomePage() {
           </button>
           <div className="flex space-x-4 justify-center overflow-hidden">
             {filteredShops.slice(currentIndex, currentIndex + itemsPerPage).map((shop) => (
-              <div key={shop.id} className="bg-white shadow-lg rounded-lg overflow-hidden w-80">
-                <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
-                <div className="p-4">
-                  <h3 className="text-xl font-bold">{shop.name}</h3>
-                  <p className="text-gray-600">{shop.location}</p>
-                  <div className="flex items-center mt-2">
-                    <span className="text-yellow-400 mr-2">★</span>
-                    <span>{shop.rating}</span>
+              <Link key={shop.id} href={`/shops/${shop.id}`}>
+                <div className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
+                  <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
+                  <div className="p-4">
+                    <h3 className="text-xl font-bold">{shop.name}</h3>
+                    <p className="text-gray-600">{shop.location}</p>
+                    <div className="flex items-center mt-2">
+                      <span className="text-yellow-400 mr-2">★</span>
+                      <span>{shop.rating}</span>
+                    </div>
+                    <p className="text-gray-800 mt-2">{shop.price}</p>
                   </div>
-                  <p className="text-gray-800 mt-2">{shop.price}</p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
           <button
@@ -165,18 +168,20 @@ export default function HomePage() {
           </button>
           <div className="flex space-x-4 justify-center overflow-hidden">
             {newShops.slice(currentIndex, currentIndex + itemsPerPage).map((shop) => (
-              <div key={shop.id} className="bg-white shadow-lg rounded-lg overflow-hidden w-80">
-                <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
-                <div className="p-4">
-                  <h3 className="text-xl font-bold">{shop.name}</h3>
-                  <p className="text-gray-600">{shop.location}</p>
-                  <div className="flex items-center mt-2">
-                    <span className="text-yellow-400 mr-2">★</span>
-                    <span>{shop.rating}</span>
+              <Link key={shop.id} href={`/shops/${shop.id}`}>
+                <div className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
+                  <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
+                  <div className="p-4">
+                    <h3 className="text-xl font-bold">{shop.name}</h3>
+                    <p className="text-gray-600">{shop.location}</p>
+                    <div className="flex items-center mt-2">
+                      <span className="text-yellow-400 mr-2">★</span>
+                      <span>{shop.rating}</span>
+                    </div>
+                    <p className="text-gray-800 mt-2">{shop.price}</p>
                   </div>
-                  <p className="text-gray-800 mt-2">{shop.price}</p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
           <button
@@ -202,18 +207,20 @@ export default function HomePage() {
           </button>
           <div className="flex space-x-4 justify-center overflow-hidden">
             {favoriteShops.slice(currentIndex, currentIndex + itemsPerPage).map((shop) => (
-              <div key={shop.id} className="bg-white shadow-lg rounded-lg overflow-hidden w-80">
-                <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
-                <div className="p-4">
-                  <h3 className="text-xl font-bold">{shop.name}</h3>
-                  <p className="text-gray-600">{shop.location}</p>
-                  <div className="flex items-center mt-2">
-                    <span className="text-yellow-400 mr-2">★</span>
-                    <span>{shop.rating}</span>
+              <Link key={shop.id} href={`/shops/${shop.id}`}>
+                <div className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
+                  <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
+                  <div className="p-4">
+                    <h3 className="text-xl font-bold">{shop.name}</h3>
+                    <p className="text-gray-600">{shop.location}</p>
+                    <div className="flex items-center mt-2">
+                      <span className="text-yellow-400 mr-2">★</span>
+                      <span>{shop.rating}</span>
+                    </div>
+                    <p className="text-gray-800 mt-2">{shop.price}</p>
                   </div>
-                  <p className="text-gray-800 mt-2">{shop.price}</p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
           <button
