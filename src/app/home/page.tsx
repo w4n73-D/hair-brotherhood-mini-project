@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { barberShops, newBarberShops } from '../data/shops'; // Ensure this path is correct
+import { barberShops, newBarberShops, favBarberShops } from '../data/shops'; // Ensure this path is correct
 
 export default function HomePage() {
   const [search, setSearch] = useState('');
   const [filteredShops, setFilteredShops] = useState(barberShops);
   const [newShops] = useState(newBarberShops);
+  const [favoriteShops] = useState(favBarberShops);
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsPerPage = 3;
   const [isSearchSticky, setIsSearchSticky] = useState(false);
@@ -200,7 +201,7 @@ export default function HomePage() {
             &lt;
           </button>
           <div className="flex space-x-4 justify-center overflow-hidden">
-            {newShops.slice(currentIndex, currentIndex + itemsPerPage).map((shop) => (
+            {favoriteShops.slice(currentIndex, currentIndex + itemsPerPage).map((shop) => (
               <div key={shop.id} className="bg-white shadow-lg rounded-lg overflow-hidden w-80">
                 <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
                 <div className="p-4">
@@ -218,7 +219,7 @@ export default function HomePage() {
           <button
             className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
             onClick={nextPage}
-            disabled={currentIndex + itemsPerPage >= newShops.length}
+            disabled={currentIndex + itemsPerPage >= favoriteShops.length}
           >
             &gt;
           </button>
