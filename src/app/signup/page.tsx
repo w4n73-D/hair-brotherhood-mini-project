@@ -8,13 +8,34 @@ export default function SignupPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [countryCode, setCountryCode] = useState('');
 
   const handleEmailChange = (e: { target: { value: SetStateAction<string>; }; }) => {
     setEmail(e.target.value);
   };
 
+  const handlePasswordChange = (e: { target: { value: SetStateAction<string>; }; }) => {
+    setPassword(e.target.value);
+  };
+
+  const handleConfirmPasswordChange = (e: { target: { value: SetStateAction<string>; }; }) => {
+    setConfirmPassword(e.target.value);
+  };
+
+  const handleMobileNumberChange = (e: { target: { value: SetStateAction<string>; }; }) => {
+    // Only allow numbers
+    const value = e.target.value.replace(/\D/g, '');
+    setMobileNumber(value);
+  };
+
   const handleContinueClick = () => {
-    if (email.trim() !== '') {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email.trim() !== '' && emailRegex.test(email)) {
       setShowForm(true);
     } else {
       alert('Please enter a valid email address.');
@@ -23,6 +44,12 @@ export default function SignupPage() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      alert('Passwords do not match. Please try again.');
+      return;
+    }
+
     // Simulate successful signup and redirect to home page
     router.push('/home');
   };
@@ -109,25 +136,67 @@ export default function SignupPage() {
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
                   Password *
                 </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </span>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">
+                  Confirm Password *
+                </label>
                 <input
-                  type="password"
-                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  id="confirmPassword"
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Password"
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={handleConfirmPasswordChange}
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="mobileNumber">
-                  Mobile number *
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="countryCode">
+                  Country Code *
                 </label>
-                <input
-                  type="text"
-                  id="mobileNumber"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Mobile number"
-                  required
-                />
+                <div className="flex">
+                  <select
+                    id="countryCode"
+                    className="shadow appearance-none border rounded-l w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    required
+                  >
+                    <option value="">Select</option>
+                    <option value="+1">+1</option>
+                    <option value="+44">+44</option>
+                    <option value="+233">+233</option>
+                    <option value="+91">+91</option>
+                    {/* Add more country codes as needed */}
+                  </select>
+                  <input
+                    type="text"
+                    id="mobileNumber"
+                    className="shadow appearance-none border rounded-r w-2/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Mobile number"
+                    value={mobileNumber}
+                    onChange={handleMobileNumberChange}
+                    required
+                  />
+                </div>
               </div>
               <div className="mb-4">
                 <input
