@@ -1,32 +1,32 @@
 'use client';
 
-import { SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [showForm, setShowForm] = useState(false);
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [countryCode, setCountryCode] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [mobileNumber, setMobileNumber] = useState<string>('');
+  const [countryCode, setCountryCode] = useState<string>('');
 
-  const handleEmailChange = (e: { target: { value: SetStateAction<string>; }; }) => {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e: { target: { value: SetStateAction<string>; }; }) => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e: { target: { value: SetStateAction<string>; }; }) => {
+  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(e.target.value);
   };
 
-  const handleMobileNumberChange = (e: { target: { value: SetStateAction<string>; }; }) => {
+  const handleMobileNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Only allow numbers
     const value = e.target.value.replace(/\D/g, '');
     setMobileNumber(value);
