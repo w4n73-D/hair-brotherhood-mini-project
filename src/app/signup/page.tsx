@@ -1,8 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { auth, db } from '../firebase/config'; // Import Firebase auth and Firestore
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import Image from 'next/image';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -13,23 +16,32 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [countryCode, setCountryCode] = useState<string>('');
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
-  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(e.target.value);
   };
 
-  const handleMobileNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow numbers
+  const handleMobileNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, '');
     setMobileNumber(value);
+  };
+
+  const handleFirstNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFirstName(e.target.value);
+  };
+
+  const handleLastNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLastName(e.target.value);
   };
 
   const handleContinueClick = () => {
@@ -42,17 +54,38 @@ export default function SignupPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     if (password !== confirmPassword) {
       alert('Passwords do not match. Please try again.');
       return;
     }
-
-    // Simulate successful signup and redirect to home page
-    router.push('/home');
+  
+    try {
+      // Create the user with email and password
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+  
+      // Save additional user information in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        firstName,
+        lastName,
+        email: user.email,
+        phoneNumber: `${countryCode}${mobileNumber}`,
+      });
+  
+      router.push('/home');
+    } catch (error: any) {
+      if (error.code === 'auth/email-already-in-use') {
+        alert('This email is already in use. Please try signing in or use a different email.');
+      } else {
+        console.error("Error signing up:", error.message);
+        alert(`Error signing up: ${error.message}`);
+      }
+    }
   };
+  
 
   return (
     <div className="min-h-screen flex">
@@ -115,6 +148,8 @@ export default function SignupPage() {
                 <input
                   type="text"
                   id="firstName"
+                  value={firstName}
+                  onChange={handleFirstNameChange}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   placeholder="First name"
                   required
@@ -127,6 +162,8 @@ export default function SignupPage() {
                 <input
                   type="text"
                   id="lastName"
+                  value={lastName}
+                  onChange={handleLastNameChange}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   placeholder="Last name"
                   required
