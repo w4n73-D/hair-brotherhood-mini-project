@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { barberShops, newBarberShops, favBarberShops } from '../data/shops'; // Ensure this path is correct
+import { reviews } from '../data/reviews'; // Ensure you have reviews data
 
 export default function HomePage() {
   const [search, setSearch] = useState('');
@@ -119,7 +120,7 @@ export default function HomePage() {
       {/* Barber Shop Cards Section */}
       <div className="w-full p-8">
         <h2 className="text-3xl font-bold text-center mb-8">Recommended Places</h2>
-        <div className="relative">
+        <div className="relative flex justify-center">
           <button
             className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
             onClick={prevPage}
@@ -127,7 +128,7 @@ export default function HomePage() {
           >
             &lt;
           </button>
-          <div className="flex space-x-4 justify-center overflow-hidden">
+          <div className="flex space-x-4 overflow-x-auto">
             {filteredShops.slice(currentIndex, currentIndex + itemsPerPage).map((shop) => (
               <Link key={shop.id} href={`/shops/${shop.id}`}>
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
@@ -158,7 +159,7 @@ export default function HomePage() {
       {/* New Shops Section */}
       <div className="w-full p-8">
         <h2 className="text-3xl font-bold text-center mb-8">New Places</h2>
-        <div className="relative">
+        <div className="relative flex justify-center">
           <button
             className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
             onClick={prevPage}
@@ -166,7 +167,7 @@ export default function HomePage() {
           >
             &lt;
           </button>
-          <div className="flex space-x-4 justify-center overflow-hidden">
+          <div className="flex space-x-4 overflow-x-auto">
             {newShops.slice(currentIndex, currentIndex + itemsPerPage).map((shop) => (
               <Link key={shop.id} href={`/shops/${shop.id}`}>
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
@@ -197,7 +198,7 @@ export default function HomePage() {
       {/* People's Favorite Section */}
       <div className="w-full p-8">
         <h2 className="text-3xl font-bold text-center mb-8">People's Favorite</h2>
-        <div className="relative">
+        <div className="relative flex justify-center">
           <button
             className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
             onClick={prevPage}
@@ -205,7 +206,7 @@ export default function HomePage() {
           >
             &lt;
           </button>
-          <div className="flex space-x-4 justify-center overflow-hidden">
+          <div className="flex space-x-4 overflow-x-auto">
             {favoriteShops.slice(currentIndex, currentIndex + itemsPerPage).map((shop) => (
               <Link key={shop.id} href={`/shops/${shop.id}`}>
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
@@ -230,6 +231,37 @@ export default function HomePage() {
           >
             &gt;
           </button>
+        </div>
+      </div>
+
+      {/* Reviews Section */}
+      <div className="w-full p-8">
+        <h2 className="text-3xl font-bold text-center mb-8">Reviews</h2>
+        <div className="relative flex justify-center">
+          <div className="flex space-x-4 overflow-x-auto">
+            {reviews.map((review) => (
+              <div key={review.id} className="bg-white shadow-lg rounded-lg overflow-hidden w-80">
+                <div className="relative">
+                  <Image
+                    src={review.shopImageUrl}
+                    alt={review.shopName}
+                    width={400}
+                    height={300}
+                    className="w-full h-40 object-cover"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-xl font-bold">{review.reviewerName}</h3>
+                  <p className="text-gray-800 mt-2">{review.reviewText}</p>
+                  <div className="flex items-center mt-2">
+                    <span className="text-yellow-400 mr-2">★</span>
+                    <span>{review.rating}</span>
+                  </div>
+                  <p className="text-gray-600 mt-2">{review.shopName}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

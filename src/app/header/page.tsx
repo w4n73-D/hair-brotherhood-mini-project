@@ -16,7 +16,7 @@ export default function HeaderNav({ showLoginForm, onLoginClick }) {
           />
         </a>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center hover:cursor-pointer">
         <ul className="flex space-x-8 text-white">
           {!showLoginForm && (
             <li onClick={onLoginClick}>Log In</li>
