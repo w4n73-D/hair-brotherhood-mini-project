@@ -1,15 +1,38 @@
-'use client'
+'use client';
 
-import { useState } from "react";
-import HeaderNav from "./header/page";
-import Image from "next/image";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './firebase/config'; // Correct path for Firebase config
+import HeaderNav from './header/page';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Home() {
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const router = useRouter();
 
   const toggleLoginForm = () => {
     setShowLoginForm(!showLoginForm);
+  };
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(''); // Reset error message
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push('/home'); // Redirect after successful login
+    } catch (error: any) {
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        setError('Invalid email or password. Please try again.');
+      } else {
+        setError(`Error: ${error.message}`);
+      }
+    }
   };
 
   return (
@@ -27,7 +50,7 @@ export default function Home() {
           <div className="flex">
             <input
               type="text"
-              placeholder="Enter name of prefered shop"
+              placeholder="Enter name of preferred shop"
               className="border p-2 rounded-l"
             />
             <button className="bg-orange-500 text-white p-2 rounded-r">Search</button>
@@ -48,16 +71,19 @@ export default function Home() {
           <div className="absolute inset-0 flex items-center justify-center z-20">
             <div className="bg-white bg-opacity-75 p-8 rounded-lg shadow-lg w-full max-w-md">
               <h2 className="text-2xl font-bold mb-4">Log In</h2>
-              <form>
+              <form onSubmit={handleLogin}>
                 <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-                    Username
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                    Email
                   </label>
                   <input
-                    type="text"
-                    id="username"
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Username"
+                    placeholder="Email"
+                    required
                   />
                 </div>
                 <div className="mb-6">
@@ -67,10 +93,18 @@ export default function Home() {
                   <input
                     type="password"
                     id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Password"
+                    required
                   />
                 </div>
+                {error && (
+                  <div className="mb-4 text-red-500">
+                    {error}
+                  </div>
+                )}
                 <div className="flex items-center justify-between mb-4">
                   <button
                     type="submit"
