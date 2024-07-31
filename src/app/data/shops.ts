@@ -8,7 +8,7 @@ export const barberShops = [
     price: '$20',
     description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.',
     imageUrl: '/halfbackground.jpg',
-    images: ['/halfbackground.jpg', '/interior1.jpg', '/interior2.jpg'], // Sample image URLs
+    images: ['/halfbackground.jpg', '/halfbackground.jpg', '/halfbackground.jpg'], // Sample image URLs
     services: [
       { name: 'Men\'s Haircut', duration: '1hr', price: '$20' },
       { name: 'Beard Trim', duration: '30mins', price: '$10' },
