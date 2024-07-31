@@ -1,11 +1,10 @@
-// src/app/shops/[id]/page.tsx
-
 "use client";
 
 import { useState } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { barberShops, newBarberShops, favBarberShops } from '../../data/shops'; // Ensure the path is correct
+import Header from '@/app/header/header'; // Adjust the path as needed
 
 interface Shop {
   id: number;
@@ -37,6 +36,7 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
   }
 
   const [chatOpen, setChatOpen] = useState(false);
+  const [showHeader, setShowHeader] = useState(true); // Initialize based on the user's action
 
   const handleOpenChat = () => {
     setChatOpen(true);
@@ -48,67 +48,78 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center p-8">
-      {/* Header */}
-      <h1 className="text-3xl font-bold mb-4">{shop.name}</h1>
-      <p className="text-xl mb-4">{shop.rating} ★ (39 reviews)</p>
-      <p className={`text-lg mb-4 ${shop.open ? 'text-green-500' : 'text-red-500'}`}>
-        {shop.open ? 'Open now' : 'Closed'}
-      </p>
+      <Header show={showHeader} /> {/* Pass state to show/hide the header */}
 
-      {/* Gallery */}
-      <div className="w-full mb-8 flex">
-        <div className="w-full max-w-[800px] mr-4">
-          {/* Main large image */}
-          <Image src={shop.imageUrl} alt={shop.name} width={800} height={600} className="w-full h-auto" />
+      {/* Main Container */}
+      <div className="w-full max-w-screen-lg mx-auto">
+
+        {/* Shop Name and Reviews */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">{shop.name}</h1>
+          <p className="text-xl mb-2">{shop.rating} ★ (39 reviews)</p>
+          <p className={`text-lg ${shop.open ? 'text-green-500' : 'text-red-500'}`}>
+            {shop.open ? 'Open now' : 'Closed'}
+          </p>
         </div>
-        <div className="flex flex-col space-y-2 w-[200px]">
-          {/* Two smaller images */}
-          {shop.images && shop.images.length > 1 ? (
-            <>
-              <Image src={shop.images[1]} alt={`${shop.name} image 2`} width={200} height={150} className="w-full h-auto object-cover" />
-              <Image src={shop.images[2]} alt={`${shop.name} image 3`} width={200} height={150} className="w-full h-auto object-cover" />
-            </>
-          ) : (
-            <p>No additional images available.</p>
-          )}
+
+        {/* Gallery */}
+        <div className="w-full flex flex-col mb-8">
+          <div className="w-full flex mb-4">
+            {/* Main large image */}
+            <div className="w-full max-w-[600px] flex-1 mr-4">
+              <Image src={shop.imageUrl} alt={shop.name} width={600} height={450} className="w-full h-auto" />
+            </div>
+            {/* Two smaller images */}
+            <div className="flex flex-col space-y-4 w-full max-w-[200px] flex-shrink-0">
+              {shop.images && shop.images.length > 1 ? (
+                <>
+                  <Image src={shop.images[1]} alt={`${shop.name} image 2`} width={200} height={150} className="w-full h-auto object-cover" />
+                  <Image src={shop.images[2]} alt={`${shop.name} image 3`} width={200} height={150} className="w-full h-auto object-cover" />
+                </>
+              ) : (
+                <p>No additional images available.</p>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* Details */}
-      <div className="w-full mb-8">
-        <p className="text-lg mb-4">Location: {shop.location}</p>
-        <p className="text-lg mb-4">{shop.description}</p>
-        <p className="text-lg mb-4">Price Range: {shop.price}</p>
-      </div>
-
-      {/* Services */}
-      <div className="w-full mb-8">
-        <h2 className="text-2xl font-bold mb-4">Services</h2>
-        <div>
-          {shop.services && shop.services.length > 0 ? (
-            shop.services.map((service, index) => (
-              <div key={index} className="mb-4">
-                <h3 className="text-lg font-bold">{service.name}</h3>
-                <p>{service.duration} | {service.price}</p>
-              </div>
-            ))
-          ) : (
-            <p>No services available.</p>
-          )}
+        {/* Details */}
+        <div className="w-full mb-8">
+          <p className="text-lg mb-4">Location: {shop.location}</p>
+          <p className="text-lg mb-4">{shop.description}</p>
+          <p className="text-lg mb-4">Price Range: {shop.price}</p>
         </div>
-      </div>
 
-      {/* Booking and Chat */}
-      <div className="w-[400px] flex justify-between mb-8">
-        <button className="bg-orange-300 text-center rounded-xl h-[30px] w-[170px]">
-          Book an Appointment
-        </button>
-        <button
-          onClick={handleOpenChat}
-          className="bg-orange-300 text-center rounded-xl h-[30px] w-[170px]"
-        >
-          Send a message
-        </button>
+        {/* Services */}
+        <div className="w-full mb-8">
+          <h2 className="text-2xl font-bold mb-4">Services</h2>
+          <div>
+            {shop.services && shop.services.length > 0 ? (
+              shop.services.map((service, index) => (
+                <div key={index} className="mb-4">
+                  <h3 className="text-lg font-bold">{service.name}</h3>
+                  <p>{service.duration} | {service.price}</p>
+                </div>
+              ))
+            ) : (
+              <p>No services available.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Booking and Chat */}
+        <div className="w-full max-w-screen-lg mx-auto flex justify-between mb-8">
+          <button className="bg-orange-300 text-center rounded-xl h-[30px] w-[170px]">
+            Book an Appointment
+          </button>
+          <button
+            onClick={handleOpenChat}
+            className="bg-orange-300 text-center rounded-xl h-[30px] w-[170px]"
+          >
+            Send a message
+          </button>
+        </div>
+
       </div>
 
       {chatOpen && (
