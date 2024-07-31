@@ -188,7 +188,7 @@ export const newBarberShops = [
   },
   {
     id: 4,
-    name: 'Urban Only Barber Shop',
+    name: 'Urban Men Barber Shop',
     location: 'Boadi',
     rating: 4.5,
     price: '$20',
@@ -202,7 +202,7 @@ export const newBarberShops = [
   },
   {
     id: 5,
-    name: 'Classical HairCuts',
+    name: 'Luxury Men HairCut',
     location: 'Emena',
     rating: 4.0,
     price: '$25',
@@ -216,7 +216,7 @@ export const newBarberShops = [
   },
   {
     id: 6,
-    name: 'Elite Barbers',
+    name: 'Elegant Barbershop',
     location: 'Kotei',
     rating: 4.8,
     price: '$30',
@@ -230,7 +230,7 @@ export const newBarberShops = [
   },
   {
     id: 7,
-    name: 'Urban Only Barber Shop',
+    name: 'Downtown Barber Shop',
     location: 'Boadi',
     rating: 4.5,
     price: '$20',
@@ -244,7 +244,7 @@ export const newBarberShops = [
   },
   {
     id: 8,
-    name: 'Classical HairCuts',
+    name: 'Uptown Classics HairCut',
     location: 'Emena',
     rating: 4.0,
     price: '$25',
@@ -292,7 +292,7 @@ export const newBarberShops = [
 export const favBarberShops = [
   {
     id: 1,
-    name: 'Urban Only Barber Shop',
+    name: 'Untouchable Barber Shop',
     location: 'Boadi',
     rating: 4.5,
     price: '$20',
@@ -306,7 +306,7 @@ export const favBarberShops = [
   },
   {
     id: 2,
-    name: 'Classics only HairCuts',
+    name: 'God Did HairCuts',
     location: 'Emena',
     rating: 4.0,
     price: '$25',
@@ -320,7 +320,7 @@ export const favBarberShops = [
   },
   {
     id: 3,
-    name: 'Elite Barbers',
+    name: 'GENIE\'s Barbers',
     location: 'Kotei',
     rating: 4.8,
     price: '$30',
