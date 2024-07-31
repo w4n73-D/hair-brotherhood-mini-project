@@ -51,10 +51,10 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
       <Header show={showHeader} /> {/* Pass state to show/hide the header */}
 
       {/* Main Container */}
-      <div className="w-full max-w-screen-lg mx-auto">
+      <div className="w-full max-w-screen-lg mx-auto mt-[60px]">
 
         {/* Shop Name and Reviews */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-[10px] flex justify-between">
           <h1 className="text-3xl font-bold mb-2">{shop.name}</h1>
           <p className="text-xl mb-2">{shop.rating} ★ (39 reviews)</p>
           <p className={`text-lg ${shop.open ? 'text-green-500' : 'text-red-500'}`}>
@@ -66,15 +66,15 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
         <div className="w-full flex flex-col mb-8">
           <div className="w-full flex mb-4">
             {/* Main large image */}
-            <div className="w-full max-w-[600px] flex-1 mr-4">
-              <Image src={shop.imageUrl} alt={shop.name} width={600} height={450} className="w-full h-auto" />
+            <div className="w-full max-w-[700px] flex-1 mr-4">
+              <Image src={shop.imageUrl} alt={shop.name} width={600} height={450} className="w-full h-auto rounded-xl" />
             </div>
             {/* Two smaller images */}
-            <div className="flex flex-col space-y-4 w-full max-w-[200px] flex-shrink-0">
+            <div className="flex flex-col space-y-4 w-full max-w-[300px] flex-shrink-0">
               {shop.images && shop.images.length > 1 ? (
                 <>
-                  <Image src={shop.images[1]} alt={`${shop.name} image 2`} width={200} height={150} className="w-full h-auto object-cover" />
-                  <Image src={shop.images[2]} alt={`${shop.name} image 3`} width={200} height={150} className="w-full h-auto object-cover" />
+                  <Image src={shop.images[1]} alt={`${shop.name} image 2`} width={200} height={150} className="w-full h-auto object-cover rounded-xl" />
+                  <Image src={shop.images[2]} alt={`${shop.name} image 3`} width={200} height={150} className="w-full h-auto object-cover rounded-xl" />
                 </>
               ) : (
                 <p>No additional images available.</p>
@@ -108,7 +108,7 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
         </div>
 
         {/* Booking and Chat */}
-        <div className="w-full max-w-screen-lg mx-auto flex justify-between mb-8">
+        <div className="w-[700px] flex justify-between mb-8">
           <button className="bg-orange-300 text-center rounded-xl h-[30px] w-[170px]">
             Book an Appointment
           </button>
