@@ -56,13 +56,18 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
       </p>
 
       {/* Gallery */}
-      <div className="w-full mb-8">
-        <Image src={shop.imageUrl} alt={shop.name} width={800} height={600} className="mb-4" />
-        <div className="flex space-x-2">
-          {shop.images && shop.images.length > 0 ? (
-            shop.images.map((img, index) => (
-              <Image key={index} src={img} alt={`${shop.name} image ${index + 1}`} width={100} height={75} className="cursor-pointer" />
-            ))
+      <div className="w-full mb-8 flex">
+        <div className="w-full max-w-[800px] mr-4">
+          {/* Main large image */}
+          <Image src={shop.imageUrl} alt={shop.name} width={800} height={600} className="w-full h-auto" />
+        </div>
+        <div className="flex flex-col space-y-2 w-[200px]">
+          {/* Two smaller images */}
+          {shop.images && shop.images.length > 1 ? (
+            <>
+              <Image src={shop.images[1]} alt={`${shop.name} image 2`} width={200} height={150} className="w-full h-auto object-cover" />
+              <Image src={shop.images[2]} alt={`${shop.name} image 3`} width={200} height={150} className="w-full h-auto object-cover" />
+            </>
           ) : (
             <p>No additional images available.</p>
           )}
