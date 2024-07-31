@@ -1,26 +1,420 @@
+
 export const barberShops = [
-  { id: 1, name: 'Urban Barber Shop', location: 'Boadi', rating: 4.5, price: '$20', description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.', imageUrl: '/halfbackground.jpg' },
-  { id: 2, name: 'Classic Cuts', location: 'Emena', rating: 4.0, price: '$25', description: 'Traditional barbering with a touch of class.', imageUrl: '/halfbackground.jpg' },
-  { id: 3, name: 'Elite Barbers', location: 'Kotei', rating: 4.8, price: '$30', description: 'High-end services for the discerning client.', imageUrl: '/halfbackground.jpg' },
-  { id: 4, name: 'Luxury Lounge', location: 'New Site', rating: 4.7, price: '$35', description: 'Luxury barbering experience with premium amenities.', imageUrl: '/halfbackground.jpg' },
-  { id: 5, name: 'Modern Styles', location: 'Tech Junction', rating: 4.6, price: '$28', description: 'Cutting-edge styles and modern techniques.', imageUrl: '/halfbackground.jpg' },
-  { id: 6, name: 'Barber Brothers', location: 'West Gate', rating: 4.9, price: '$32', description: 'Family-owned shop offering friendly service and high-quality cuts.', imageUrl: '/halfbackground.jpg' },
+  {
+    id: 1,
+    name: 'Urban Barber Shop',
+    location: 'Boadi',
+    rating: 4.5,
+    price: '$20',
+    description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior1.jpg', '/interior2.jpg'], // Sample image URLs
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$20' },
+      { name: 'Beard Trim', duration: '30mins', price: '$10' },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Classic Cuts',
+    location: 'Emena',
+    rating: 4.0,
+    price: '$25',
+    description: 'Traditional barbering with a touch of class.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior3.jpg', '/interior4.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$25' },
+      { name: 'Beard Trim', duration: '30mins', price: '$12' },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  {
+    id: 4,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  {
+    id: 5,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  {
+    id: 6,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  {
+    id: 7,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  {
+    id: 8,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  {
+    id: 9,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  // Add the remaining shops in a similar way
 ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const newBarberShops = [
-  { id: 1, name: 'Urban Only Barber Shop', location: 'Boadi', rating: 4.5, price: '$20', description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.', imageUrl: '/halfbackground.jpg' },
-  { id: 2, name: 'Classical HairCuts', location: 'Emena', rating: 4.0, price: '$25', description: 'Traditional barbering with a touch of class.', imageUrl: '/halfbackground.jpg' },
-  { id: 3, name: 'Elite Barbers', location: 'Kotei', rating: 4.8, price: '$30', description: 'High-end services for the discerning client.', imageUrl: '/halfbackground.jpg' },
-  { id: 4, name: 'Luxury Barbers Lounge', location: 'New Site', rating: 4.7, price: '$35', description: 'Luxury barbering experience with premium amenities.', imageUrl: '/halfbackground.jpg' },
-  { id: 5, name: 'Modern HairStyles', location: 'Tech Junction', rating: 4.6, price: '$28', description: 'Cutting-edge styles and modern techniques.', imageUrl: '/halfbackground.jpg' },
-  { id: 6, name: 'Barber Brothers', location: 'West Gate', rating: 4.9, price: '$32', description: 'Family-owned shop offering friendly service and high-quality cuts.', imageUrl: '/halfbackground.jpg' },
+  {
+    id: 1,
+    name: 'Urban Only Barber Shop',
+    location: 'Boadi',
+    rating: 4.5,
+    price: '$20',
+    description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior1.jpg', '/interior2.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$20' },
+      { name: 'Beard Trim', duration: '30mins', price: '$10' },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Classical HairCuts',
+    location: 'Emena',
+    rating: 4.0,
+    price: '$25',
+    description: 'Traditional barbering with a touch of class.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior3.jpg', '/interior4.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$25' },
+      { name: 'Beard Trim', duration: '30mins', price: '$12' },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  {
+    id: 4,
+    name: 'Urban Only Barber Shop',
+    location: 'Boadi',
+    rating: 4.5,
+    price: '$20',
+    description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior1.jpg', '/interior2.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$20' },
+      { name: 'Beard Trim', duration: '30mins', price: '$10' },
+    ],
+  },
+  {
+    id: 5,
+    name: 'Classical HairCuts',
+    location: 'Emena',
+    rating: 4.0,
+    price: '$25',
+    description: 'Traditional barbering with a touch of class.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior3.jpg', '/interior4.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$25' },
+      { name: 'Beard Trim', duration: '30mins', price: '$12' },
+    ],
+  },
+  {
+    id: 6,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  {
+    id: 7,
+    name: 'Urban Only Barber Shop',
+    location: 'Boadi',
+    rating: 4.5,
+    price: '$20',
+    description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior1.jpg', '/interior2.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$20' },
+      { name: 'Beard Trim', duration: '30mins', price: '$10' },
+    ],
+  },
+  {
+    id: 8,
+    name: 'Classical HairCuts',
+    location: 'Emena',
+    rating: 4.0,
+    price: '$25',
+    description: 'Traditional barbering with a touch of class.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior3.jpg', '/interior4.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$25' },
+      { name: 'Beard Trim', duration: '30mins', price: '$12' },
+    ],
+  },
+  {
+    id: 9,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  // Add the remaining shops in a similar way
 ];
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const favBarberShops = [
-  { id: 1, name: 'Urban Only Barber Shop', location: 'Boadi', rating: 4.5, price: '$20', description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.', imageUrl: '/halfbackground.jpg' },
-  { id: 2, name: 'Classics only HairCuts', location: 'Emena', rating: 4.0, price: '$25', description: 'Traditional barbering with a touch of class.', imageUrl: '/halfbackground.jpg' },
-  { id: 3, name: 'Elite Barbers', location: 'Kotei', rating: 4.8, price: '$30', description: 'High-end services for the discerning client.', imageUrl: '/halfbackground.jpg' },
-  { id: 4, name: 'Luxury Barbers Lounge', location: 'New Site', rating: 4.7, price: '$35', description: 'Luxury barbering experience with premium amenities.', imageUrl: '/halfbackground.jpg' },
-  { id: 5, name: 'Modern HairStyles', location: 'Tech Junction', rating: 4.6, price: '$28', description: 'Cutting-edge styles and modern techniques.', imageUrl: '/halfbackground.jpg' },
-  { id: 6, name: 'Barber Brothers', location: 'West Gate', rating: 4.9, price: '$32', description: 'Family-owned shop offering friendly service and high-quality cuts.', imageUrl: '/halfbackground.jpg' },
+  {
+    id: 1,
+    name: 'Urban Only Barber Shop',
+    location: 'Boadi',
+    rating: 4.5,
+    price: '$20',
+    description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior1.jpg', '/interior2.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$20' },
+      { name: 'Beard Trim', duration: '30mins', price: '$10' },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Classics only HairCuts',
+    location: 'Emena',
+    rating: 4.0,
+    price: '$25',
+    description: 'Traditional barbering with a touch of class.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior3.jpg', '/interior4.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$25' },
+      { name: 'Beard Trim', duration: '30mins', price: '$12' },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  {
+    id: 4,
+    name: 'Urban Only Barber Shop',
+    location: 'Boadi',
+    rating: 4.5,
+    price: '$20',
+    description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior1.jpg', '/interior2.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$20' },
+      { name: 'Beard Trim', duration: '30mins', price: '$10' },
+    ],
+  },
+  {
+    id: 5,
+    name: 'Classics only HairCuts',
+    location: 'Emena',
+    rating: 4.0,
+    price: '$25',
+    description: 'Traditional barbering with a touch of class.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior3.jpg', '/interior4.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$25' },
+      { name: 'Beard Trim', duration: '30mins', price: '$12' },
+    ],
+  },
+  {
+    id: 6,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  {
+    id: 7,
+    name: 'Urban Only Barber Shop',
+    location: 'Boadi',
+    rating: 4.5,
+    price: '$20',
+    description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior1.jpg', '/interior2.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$20' },
+      { name: 'Beard Trim', duration: '30mins', price: '$10' },
+    ],
+  },
+  {
+    id: 8,
+    name: 'Classics only HairCuts',
+    location: 'Emena',
+    rating: 4.0,
+    price: '$25',
+    description: 'Traditional barbering with a touch of class.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior3.jpg', '/interior4.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$25' },
+      { name: 'Beard Trim', duration: '30mins', price: '$12' },
+    ],
+  },
+  {
+    id: 9,
+    name: 'Elite Barbers',
+    location: 'Kotei',
+    rating: 4.8,
+    price: '$30',
+    description: 'High-end services for the discerning client.',
+    imageUrl: '/halfbackground.jpg',
+    images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
+    services: [
+      { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
+      { name: 'Beard Trim', duration: '30mins', price: '$15' },
+    ],
+  },
+  // Add the remaining shops in a similar way
 ];

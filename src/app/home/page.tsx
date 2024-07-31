@@ -9,9 +9,9 @@ import { reviews } from '../data/reviews'; // Ensure you have reviews data
 export default function HomePage() {
   const [search, setSearch] = useState('');
   const [filteredShops, setFilteredShops] = useState(barberShops);
-  const [newShops] = useState(newBarberShops);
-  const [favoriteShops] = useState(favBarberShops);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndexRecommended, setCurrentIndexRecommended] = useState(0);
+  const [currentIndexNew, setCurrentIndexNew] = useState(0);
+  const [currentIndexFavorite, setCurrentIndexFavorite] = useState(0);
   const itemsPerPage = 3;
   const [isSearchSticky, setIsSearchSticky] = useState(false);
 
@@ -26,16 +26,16 @@ export default function HomePage() {
       shop.location.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredShops(filtered);
-    setCurrentIndex(0); // Reset to the first page of results
+    setCurrentIndexRecommended(0); // Reset to the first page of results
   };
 
-  const nextPage = () => {
-    if (currentIndex + itemsPerPage < filteredShops.length) {
+  const nextPage = (setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, currentIndex: number, listLength: number) => {
+    if (currentIndex + itemsPerPage < listLength) {
       setCurrentIndex(currentIndex + itemsPerPage);
     }
   };
 
-  const prevPage = () => {
+  const prevPage = (setCurrentIndex: React.Dispatch<React.SetStateAction<number>>, currentIndex: number) => {
     if (currentIndex - itemsPerPage >= 0) {
       setCurrentIndex(currentIndex - itemsPerPage);
     }
@@ -117,19 +117,19 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Barber Shop Cards Section */}
+      {/* Recommended Places Section */}
       <div className="w-full p-8">
         <h2 className="text-3xl font-bold text-center mb-8">Recommended Places</h2>
         <div className="relative flex justify-center">
           <button
             className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
-            onClick={prevPage}
-            disabled={currentIndex === 0}
+            onClick={() => prevPage(setCurrentIndexRecommended, currentIndexRecommended)}
+            disabled={currentIndexRecommended === 0}
           >
             &lt;
           </button>
           <div className="flex space-x-4 overflow-x-auto">
-            {filteredShops.slice(currentIndex, currentIndex + itemsPerPage).map((shop) => (
+            {filteredShops.slice(currentIndexRecommended, currentIndexRecommended + itemsPerPage).map((shop) => (
               <Link key={shop.id} href={`/shops/${shop.id}`}>
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
                   <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
@@ -148,27 +148,27 @@ export default function HomePage() {
           </div>
           <button
             className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
-            onClick={nextPage}
-            disabled={currentIndex + itemsPerPage >= filteredShops.length}
+            onClick={() => nextPage(setCurrentIndexRecommended, currentIndexRecommended, filteredShops.length)}
+            disabled={currentIndexRecommended + itemsPerPage >= filteredShops.length}
           >
             &gt;
           </button>
         </div>
       </div>
 
-      {/* New Shops Section */}
+      {/* New Places Section */}
       <div className="w-full p-8">
         <h2 className="text-3xl font-bold text-center mb-8">New Places</h2>
         <div className="relative flex justify-center">
           <button
             className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
-            onClick={prevPage}
-            disabled={currentIndex === 0}
+            onClick={() => prevPage(setCurrentIndexNew, currentIndexNew)}
+            disabled={currentIndexNew === 0}
           >
             &lt;
           </button>
           <div className="flex space-x-4 overflow-x-auto">
-            {newShops.slice(currentIndex, currentIndex + itemsPerPage).map((shop) => (
+            {newBarberShops.slice(currentIndexNew, currentIndexNew + itemsPerPage).map((shop) => (
               <Link key={shop.id} href={`/shops/${shop.id}`}>
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
                   <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
@@ -187,8 +187,8 @@ export default function HomePage() {
           </div>
           <button
             className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
-            onClick={nextPage}
-            disabled={currentIndex + itemsPerPage >= newShops.length}
+            onClick={() => nextPage(setCurrentIndexNew, currentIndexNew, newBarberShops.length)}
+            disabled={currentIndexNew + itemsPerPage >= newBarberShops.length}
           >
             &gt;
           </button>
@@ -201,13 +201,13 @@ export default function HomePage() {
         <div className="relative flex justify-center">
           <button
             className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
-            onClick={prevPage}
-            disabled={currentIndex === 0}
+            onClick={() => prevPage(setCurrentIndexFavorite, currentIndexFavorite)}
+            disabled={currentIndexFavorite === 0}
           >
             &lt;
           </button>
           <div className="flex space-x-4 overflow-x-auto">
-            {favoriteShops.slice(currentIndex, currentIndex + itemsPerPage).map((shop) => (
+            {favBarberShops.slice(currentIndexFavorite, currentIndexFavorite + itemsPerPage).map((shop) => (
               <Link key={shop.id} href={`/shops/${shop.id}`}>
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
                   <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
@@ -226,8 +226,8 @@ export default function HomePage() {
           </div>
           <button
             className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
-            onClick={nextPage}
-            disabled={currentIndex + itemsPerPage >= favoriteShops.length}
+            onClick={() => nextPage(setCurrentIndexFavorite, currentIndexFavorite, favBarberShops.length)}
+            disabled={currentIndexFavorite + itemsPerPage >= favBarberShops.length}
           >
             &gt;
           </button>
@@ -241,23 +241,14 @@ export default function HomePage() {
           <div className="flex space-x-4 overflow-x-auto">
             {reviews.map((review) => (
               <div key={review.id} className="bg-white shadow-lg rounded-lg overflow-hidden w-80">
-                <div className="relative">
-                  <Image
-                    src={review.shopImageUrl}
-                    alt={review.shopName}
-                    width={400}
-                    height={300}
-                    className="w-full h-40 object-cover"
-                  />
-                </div>
                 <div className="p-4">
                   <h3 className="text-xl font-bold">{review.reviewerName}</h3>
-                  <p className="text-gray-800 mt-2">{review.reviewText}</p>
+                  <p className="text-gray-600 mt-2">{review.reviewText}</p>
                   <div className="flex items-center mt-2">
                     <span className="text-yellow-400 mr-2">★</span>
                     <span>{review.rating}</span>
                   </div>
-                  <p className="text-gray-600 mt-2">{review.shopName}</p>
+                  <p className="text-gray-800 mt-2">{review.shopName}</p>
                 </div>
               </div>
             ))}
