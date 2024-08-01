@@ -2,9 +2,10 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth, db } from '../firebase/config';
+import { auth, db, storage } from '../firebase/config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Image from 'next/image';
 
 export default function BusinessSignupPage() {
@@ -18,7 +19,9 @@ export default function BusinessSignupPage() {
   const [countryCode, setCountryCode] = useState<string>('');
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
-  const [error, setError] = useState<string>(''); // Add error state
+  const [businessName, setBusinessName] = useState<string>('');
+  const [businessImages, setBusinessImages] = useState<File[]>([]); // Updated state for multiple business images
+  const [error, setError] = useState<string>('');
 
   // Handlers for input changes
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
@@ -27,6 +30,13 @@ export default function BusinessSignupPage() {
   const handleMobileNumberChange = (e: ChangeEvent<HTMLInputElement>) => setMobileNumber(e.target.value.replace(/\D/g, ''));
   const handleFirstNameChange = (e: ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value);
   const handleLastNameChange = (e: ChangeEvent<HTMLInputElement>) => setLastName(e.target.value);
+  const handleBusinessNameChange = (e: ChangeEvent<HTMLInputElement>) => setBusinessName(e.target.value);
+  
+  const handleBusinessImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setBusinessImages(Array.from(e.target.files));
+    }
+  };
 
   // Validate email and show form
   const handleContinueClick = () => {
@@ -34,7 +44,7 @@ export default function BusinessSignupPage() {
     if (email.trim() !== '' && emailRegex.test(email)) {
       setShowForm(true);
     } else {
-      setError('Please enter a valid email address.'); // Set error message
+      setError('Please enter a valid email address.');
     }
   };
 
@@ -42,26 +52,35 @@ export default function BusinessSignupPage() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError('Passwords do not match. Please try again.'); // Set error message
+      setError('Passwords do not match. Please try again.');
       return;
     }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+
+      // Upload business images
+      const imageUrls: string[] = [];
+      for (const image of businessImages) {
+        const imageRef = ref(storage, `business-images/${user.uid}/${image.name}`);
+        await uploadBytes(imageRef, image);
+        const url = await getDownloadURL(imageRef);
+        imageUrls.push(url);
+      }
+
       await setDoc(doc(db, "businesses", user.uid), {
         firstName,
         lastName,
         email: user.email,
         phoneNumber: `${countryCode}${mobileNumber}`,
+        businessName,
+        businessImageUrls: imageUrls, // Save image URLs to Firestore
       });
-      router.push('/home'); // Redirect after successful sign-up
+      
+      router.push('/business_Signup/step2'); // Redirect to the next step
     } catch (error: any) {
-      if (error.code === 'auth/email-already-in-use') {
-        setError('This email is already in use. Please try signing in or use a different email.'); // Set error message
-      } else {
-        setError(`Error signing up: ${error.message}`); // Set error message
-      }
+      setError(`Error signing up: ${error.message}`);
     }
   };
 
@@ -113,7 +132,7 @@ export default function BusinessSignupPage() {
               Continue
             </button>
 
-            {error && <p className="text-red-500 mt-4">{error}</p>} {/* Display error messages */}
+            {error && <p className="text-red-500 mt-4">{error}</p>}
           </div>
         ) : (
           <div className="flex flex-col justify-center h-full">
@@ -186,41 +205,69 @@ export default function BusinessSignupPage() {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="countryCode">
-                  Country Code *
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phoneNumber">
+                  Mobile Number *
                 </label>
-                <div className="flex">
-                  <select
-                    id="countryCode"
-                    className="shadow appearance-none border rounded-l w-1/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    value={countryCode}
-                    onChange={(e) => setCountryCode(e.target.value)}
-                    required
-                  >
-                    <option value="">Select Code</option>
-                    <option value="+1">+1</option>
-                    <option value="+44">+44</option>
-                    {/* Add other country codes here */}
-                  </select>
-                  <input
-                    type="text"
-                    value={mobileNumber}
-                    onChange={handleMobileNumberChange}
-                    className="shadow appearance-none border rounded-r w-3/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Mobile Number"
-                    required
-                  />
-                </div>
+                <input
+                  type="text"
+                  id="phoneNumber"
+                  value={mobileNumber}
+                  onChange={handleMobileNumberChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="Mobile Number"
+                  required
+                />
               </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="countryCode">
+                  Country Code
+                </label>
+                <input
+                  type="text"
+                  id="countryCode"
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="Country Code"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="businessName">
+                  Business Name *
+                </label>
+                <input
+                  type="text"
+                  id="businessName"
+                  value={businessName}
+                  onChange={handleBusinessNameChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="Business Name"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="businessImages">
+                  Business Images (Up to 3)
+                </label>
+                <input
+                  type="file"
+                  id="businessImages"
+                  multiple
+                  onChange={handleBusinessImagesChange}
+                  className="w-full text-gray-700"
+                />
+              </div>
+  
               <button
-                type="submit"
-                className="bg-zinc-900 w-full text-white text-center py-2 rounded-lg shadow hover:bg-orange-500 transition-colors"
+                type="button"
+                onClick={() => router.push('/business_Signup/step2')}
+                className="bg-blue-500 w-full text-white text-center py-2 mt-4 rounded-lg shadow hover:bg-blue-600 transition-colors"
               >
-                Create Account
+                Next
               </button>
-            </form>
 
-            {error && <p className="text-red-500 mt-4">{error}</p>} {/* Display error messages */}
+              {error && <p className="text-red-500 mt-4">{error}</p>}
+            </form>
           </div>
         )}
       </div>
