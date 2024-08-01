@@ -2,12 +2,12 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth, db } from '../firebase/config'; // Import Firebase auth and Firestore
+import { auth, db } from '../firebase/config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import Image from 'next/image';
 
-export default function SignupPage() {
+export default function BusinessSignupPage() {
   const router = useRouter();
   const [email, setEmail] = useState<string>('');
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -18,71 +18,49 @@ export default function SignupPage() {
   const [countryCode, setCountryCode] = useState<string>('');
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
-  const [error, setError] = useState<string | null>(null); // Error state
+  const [error, setError] = useState<string>(''); // Add error state
 
-  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
+  // Handlers for input changes
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
+  const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value);
+  const handleMobileNumberChange = (e: ChangeEvent<HTMLInputElement>) => setMobileNumber(e.target.value.replace(/\D/g, ''));
+  const handleFirstNameChange = (e: ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value);
+  const handleLastNameChange = (e: ChangeEvent<HTMLInputElement>) => setLastName(e.target.value);
 
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
-
-  const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(e.target.value);
-  };
-
-  const handleMobileNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, '');
-    setMobileNumber(value);
-  };
-
-  const handleFirstNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFirstName(e.target.value);
-  };
-
-  const handleLastNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLastName(e.target.value);
-  };
-
+  // Validate email and show form
   const handleContinueClick = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (email.trim() !== '' && emailRegex.test(email)) {
       setShowForm(true);
     } else {
-      alert('Please enter a valid email address.');
+      setError('Please enter a valid email address.'); // Set error message
     }
   };
 
+  // Handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (password !== confirmPassword) {
-      setError('Passwords do not match. Please try again.');
+      setError('Passwords do not match. Please try again.'); // Set error message
       return;
     }
 
     try {
-      // Create the user with email and password
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
-      // Save additional user information in Firestore
-      await setDoc(doc(db, 'users', user.uid), {
+      await setDoc(doc(db, "businesses", user.uid), {
         firstName,
         lastName,
         email: user.email,
         phoneNumber: `${countryCode}${mobileNumber}`,
       });
-
-      router.push('/home');
+      router.push('/home'); // Redirect after successful sign-up
     } catch (error: any) {
       if (error.code === 'auth/email-already-in-use') {
-        setError('This email is already in use. Please try signing in or use a different email.');
+        setError('This email is already in use. Please try signing in or use a different email.'); // Set error message
       } else {
-        console.error('Error signing up:', error.message);
-        setError(`Error signing up: ${error.message}`);
+        setError(`Error signing up: ${error.message}`); // Set error message
       }
     }
   };
@@ -99,9 +77,9 @@ export default function SignupPage() {
 
         {!showForm ? (
           <div className="flex flex-col justify-center h-full">
-            <h1 className="text-3xl font-bold mb-2">Join Hair-Brotherhood for Customers</h1>
+            <h1 className="text-3xl font-bold mb-2">Join Hair-Brotherhood for Business</h1>
             <h3 className="text-xl mb-6">
-              Create an account to book and manage appointments
+              Create an account to manage your business profile and appointments
             </h3>
 
             <button className="bg-neutral-200 w-full text-center py-2 mb-4 rounded-lg shadow hover:bg-neutral-300 transition-colors">
@@ -134,6 +112,8 @@ export default function SignupPage() {
             >
               Continue
             </button>
+
+            {error && <p className="text-red-500 mt-4">{error}</p>} {/* Display error messages */}
           </div>
         ) : (
           <div className="flex flex-col justify-center h-full">
@@ -175,7 +155,7 @@ export default function SignupPage() {
                 </label>
                 <div className="relative">
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     id="password"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Password"
@@ -187,7 +167,7 @@ export default function SignupPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                   >
-                    {showPassword ? 'Hide' : 'Show'}
+                    {showPassword ? "Hide" : "Show"}
                   </span>
                 </div>
               </div>
@@ -196,7 +176,7 @@ export default function SignupPage() {
                   Confirm Password *
                 </label>
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   id="confirmPassword"
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   placeholder="Confirm Password"
@@ -212,68 +192,42 @@ export default function SignupPage() {
                 <div className="flex">
                   <select
                     id="countryCode"
-                    className="shadow appearance-none border rounded-l w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow appearance-none border rounded-l w-1/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     value={countryCode}
                     onChange={(e) => setCountryCode(e.target.value)}
                     required
                   >
-                    <option value="">Select</option>
+                    <option value="">Select Code</option>
                     <option value="+1">+1</option>
                     <option value="+44">+44</option>
-                    <option value="+233">+233</option>
-                    <option value="+91">+91</option>
-                    {/* Add more country codes as needed */}
+                    {/* Add other country codes here */}
                   </select>
                   <input
                     type="text"
-                    id="mobileNumber"
-                    className="shadow appearance-none border rounded-r w-2/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Mobile number"
                     value={mobileNumber}
                     onChange={handleMobileNumberChange}
+                    className="shadow appearance-none border rounded-r w-3/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Mobile Number"
                     required
                   />
                 </div>
               </div>
-              <div className="mb-4">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  className="mr-2"
-                  required
-                />
-                <label className="text-gray-700 text-sm font-bold" htmlFor="terms">
-                  I agree to the Privacy Policy, Terms of Use, and Terms of Service
-                </label>
-              </div>
-              <div className="mb-4">
-                <input
-                  type="checkbox"
-                  id="marketing"
-                  className="mr-2"
-                />
-                <label className="text-gray-700 text-sm font-bold" htmlFor="marketing">
-                  I agree to receive marketing notifications with offers and news
-                </label>
-              </div>
-              {error && (
-                <div className="text-red-500 mb-4">{error}</div> // Display error message
-              )}
               <button
                 type="submit"
-                className="bg-zinc-900 text-white py-2 px-4 rounded-lg shadow w-full"
+                className="bg-zinc-900 w-full text-white text-center py-2 rounded-lg shadow hover:bg-orange-500 transition-colors"
               >
-                Continue
+                Create Account
               </button>
             </form>
+
+            {error && <p className="text-red-500 mt-4">{error}</p>} {/* Display error messages */}
           </div>
         )}
       </div>
-
       <div className="w-1/2 relative">
         <Image
-          src="/storeprofile.jpg"
-          alt="Right side image"
+          src="/signupbgwallpaper.jpg"
+          alt="signup-bgwallpaper"
           layout="fill"
           objectFit="cover"
           quality={100}
