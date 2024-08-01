@@ -2,8 +2,9 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { doc, updateDoc } from 'firebase/firestore';
-import { auth, db } from '../../firebase/config';
+import { doc, setDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { auth, db, storage } from '../../firebase/config';
 import Image from 'next/image';
 
 export default function BusinessDetailsPage() {
@@ -13,6 +14,8 @@ export default function BusinessDetailsPage() {
   const [daysOfOperation, setDaysOfOperation] = useState<{ day: string; opening: string; closing: string }[]>([]);
   const [bio, setBio] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [file, setFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const handleDayChange = (index: number, field: 'day' | 'opening' | 'closing', value: string) => {
     const newDays = [...daysOfOperation];
@@ -36,18 +39,32 @@ export default function BusinessDetailsPage() {
     setPriceList(newPriceList);
   };
 
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const user = auth.currentUser;
       if (user) {
-        await updateDoc(doc(db, "businesses", user.uid), {
+        let imageUrl = '';
+        if (file) {
+          const storageRef = ref(storage, `businesses/${user.uid}/${file.name}`);
+          await uploadBytes(storageRef, file);
+          imageUrl = await getDownloadURL(storageRef);
+        }
+
+        await setDoc(doc(db, "businesses", user.uid), {
           location,
           bio,
           priceList,
           daysOfOperation,
+          imageUrl
         });
-        router.push('/dashboard'); // Redirect to the dashboard after submission
+        router.push('/business-dashboard'); // Redirect to the business dashboard after submission
       }
     } catch (error: any) {
       setError(`Error updating details: ${error.message}`);
@@ -197,4 +214,3 @@ export default function BusinessDetailsPage() {
     </div>
   );
 }
-    
