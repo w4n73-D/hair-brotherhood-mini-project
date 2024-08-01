@@ -10,33 +10,41 @@ import Link from 'next/link';
 
 export default function Home() {
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const [isBusinessLogin, setIsBusinessLogin] = useState(false); // New state for business login toggle
+  const [isBusinessLogin, setIsBusinessLogin] = useState(false);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const router = useRouter();
 
   const toggleLoginForm = () => {
-    setShowLoginForm(!showLoginForm);
+    setShowLoginForm(prev => !prev);
   };
 
   const toggleBusinessLogin = () => {
-    setIsBusinessLogin(!isBusinessLogin);
+    setIsBusinessLogin(prev => !prev);
   };
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(''); // Reset error message
+    setError('');
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/home'); // Redirect after successful login
+      router.push('/home');
     } catch (error: any) {
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
         setError('Invalid email or password. Please try again.');
       } else {
         setError(`Error: ${error.message}`);
       }
+    }
+  };
+
+  const handleSignUpRedirect = () => {
+    if (isBusinessLogin) {
+      router.push('/business_Signup'); // Redirect to business signup page
+    } else {
+      router.push('/signup'); // Redirect to regular signup page
     }
   };
 
@@ -47,16 +55,17 @@ export default function Home() {
         <div>
           <h1 className="text-4xl font-bold mb-4">Welcome To <br />Hair-Brotherhood</h1>
           <p className="mb-4">
-            Here our aim is to connect people to their favorite barbers or any barber around them with ease.
+            Our aim is to connect people to their favorite barbers or any barber around them with ease.
           </p>
           <p className="mb-4">
-            You can look up your preferred shop using the search bar below:
+            Look up your preferred shop using the search bar below:
           </p>
           <div className="flex">
             <input
               type="text"
               placeholder="Enter name of preferred shop"
               className="border p-2 rounded-l"
+              aria-label="Search for preferred shop"
             />
             <button className="bg-orange-500 text-white p-2 rounded-r">Search</button>
           </div>
@@ -84,6 +93,7 @@ export default function Home() {
                     className="toggle-checkbox"
                     checked={isBusinessLogin}
                     onChange={toggleBusinessLogin}
+                    aria-label="Switch between business and user login"
                   />
                   <span className="toggle-slider"></span>
                 </label>
@@ -125,7 +135,7 @@ export default function Home() {
                 <div className="flex items-center justify-between mb-4">
                   <button
                     type="submit"
-                    className="bg-orange-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   >
                     Log In
                   </button>
@@ -133,9 +143,12 @@ export default function Home() {
                 <div className="text-left">
                   <p className={`text-sm ${isBusinessLogin ? 'text-white' : 'text-gray-700'}`}>
                     If you don't have an account,{' '}
-                    <Link href="/signup" className="text-blue-500 hover:text-blue-700 font-bold underline">
+                    <span
+                      className="text-blue-500 hover:text-blue-700 font-bold underline cursor-pointer"
+                      onClick={handleSignUpRedirect}
+                    >
                       Sign Up
-                    </Link>
+                    </span>
                   </p>   
                 </div>
               </form>
