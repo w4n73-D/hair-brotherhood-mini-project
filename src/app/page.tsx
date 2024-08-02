@@ -30,7 +30,11 @@ export default function Home() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/home');
+      if (isBusinessLogin) {
+        router.push('/business-dashboard'); // Redirect to business dashboard
+      } else {
+        router.push('/home'); // Redirect to regular home page
+      }
     } catch (error: any) {
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
         setError('Invalid email or password. Please try again.');
