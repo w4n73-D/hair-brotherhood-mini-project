@@ -7,7 +7,7 @@ export const barberShops = [
     rating: 4.5,
     price: '$20',
     description: 'A modern barber shop with skilled barbers and a welcoming atmosphere.',
-    imageUrl: '/halfbackground.jpg',
+    imageUrl: '/image1.jpg',
     images: ['/halfbackground.jpg', '/halfbackground.jpg', '/halfbackground.jpg'], // Sample image URLs
     services: [
       { name: 'Men\'s Haircut', duration: '1hr', price: '$20' },
@@ -35,7 +35,7 @@ export const barberShops = [
     rating: 4.8,
     price: '$30',
     description: 'High-end services for the discerning client.',
-    imageUrl: '/halfbackground.jpg',
+    imageUrl: '/image2.jpg',
     images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
     services: [
       { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
@@ -49,7 +49,7 @@ export const barberShops = [
     rating: 4.8,
     price: '$30',
     description: 'High-end services for the discerning client.',
-    imageUrl: '/halfbackground.jpg',
+    imageUrl: '/image3.jpg',
     images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
     services: [
       { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
@@ -165,7 +165,7 @@ export const newBarberShops = [
     rating: 4.0,
     price: '$25',
     description: 'Traditional barbering with a touch of class.',
-    imageUrl: '/halfbackground.jpg',
+    imageUrl: '/image3.jpg',
     images: ['/halfbackground.jpg', '/interior3.jpg', '/interior4.jpg'],
     services: [
       { name: 'Men\'s Haircut', duration: '1hr', price: '$25' },
@@ -179,7 +179,7 @@ export const newBarberShops = [
     rating: 4.8,
     price: '$30',
     description: 'High-end services for the discerning client.',
-    imageUrl: '/halfbackground.jpg',
+    imageUrl: '/image1.jpg',
     images: ['/halfbackground.jpg', '/interior5.jpg', '/interior6.jpg'],
     services: [
       { name: 'Men\'s Haircut', duration: '1hr', price: '$30' },
