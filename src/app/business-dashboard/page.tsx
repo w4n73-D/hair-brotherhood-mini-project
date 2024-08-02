@@ -42,7 +42,7 @@ export default function DashboardPage() {
     return <div>No business data found.</div>;
   }
 
-  const { businessName, businessImageUrls = [], bio, priceList = [], daysOfOperation = [] } = businessData;
+  const { businessName, businessImageUrls = [], bio, priceList = [], daysOfOperation = [], location } = businessData;
 
   return (
     <div className="min-h-screen p-8 bg-gray-100">
@@ -54,10 +54,15 @@ export default function DashboardPage() {
       </button>
 
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
-        <h1 className="text-4xl font-bold mb-4">{businessName}</h1>
+        <div className="flex items-center mb-4">
+          <h1 className="text-4xl font-bold mr-4">{businessName}</h1>
+          {location && (
+            <p className="text-xl text-gray-600 font-bold">At: {location}</p>
+          )}
+        </div>
 
-        <div className="flex justify-center mb-8">
-          <div className="relative">
+        <div className="flex mb-8">
+          <div className="flex-1 relative">
             {businessImageUrls.length > 0 && (
               <Image
                 src={businessImageUrls[0]}
@@ -67,18 +72,18 @@ export default function DashboardPage() {
                 className="w-full rounded-lg"
               />
             )}
-            <div className="absolute top-0 right-0 flex flex-col space-y-2">
-              {businessImageUrls.slice(1).map((url: string, index: number) => (
-                <Image
-                  key={index}
-                  src={url}
-                  alt={`Additional Business Image ${index + 1}`}
-                  width={200}
-                  height={200}
-                  className="w-48 h-48 object-cover rounded-lg"
-                />
-              ))}
-            </div>
+          </div>
+          <div className="flex flex-col justify-between space-y-2 ml-4">
+            {businessImageUrls.slice(1, 3).map((url: string, index: number) => (
+              <Image
+                key={index}
+                src={url}
+                alt={`Additional Business Image ${index + 1}`}
+                width={200}
+                height={200}
+                className="w-48 h-48 object-cover rounded-lg"
+              />
+            ))}
           </div>
         </div>
 
