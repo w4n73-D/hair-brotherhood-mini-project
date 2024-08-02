@@ -42,7 +42,7 @@ export default function DashboardPage() {
     return <div>No business data found.</div>;
   }
 
-  const { businessName, businessImageUrls, bio, priceList } = businessData;
+  const { businessName, businessImageUrls = [], bio, priceList = [], daysOfOperation = [] } = businessData;
 
   return (
     <div className="min-h-screen p-8 bg-gray-100">
@@ -58,7 +58,7 @@ export default function DashboardPage() {
 
         <div className="flex justify-center mb-8">
           <div className="relative">
-            {businessImageUrls[0] && (
+            {businessImageUrls.length > 0 && (
               <Image
                 src={businessImageUrls[0]}
                 alt="Business Image"
@@ -83,16 +83,27 @@ export default function DashboardPage() {
         </div>
 
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-2">Bio</h2>
+          <h2 className="text-2xl font-bold mb-4">Business Bio</h2>
           <p className="text-gray-700">{bio}</p>
         </div>
 
-        <div>
-          <h2 className="text-2xl font-semibold mb-2">Services</h2>
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Price List</h2>
           <ul className="list-disc list-inside">
-            {priceList.map((item: { service: string; price: string }, index: number) => (
-              <li key={index} className="text-gray-700 mb-1">
-                {item.service}: {item.price}
+            {priceList.map((price, index) => (
+              <li key={index} className="mb-2">
+                <span className="font-semibold">{price.service}:</span> ${price.price}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Days of Operation</h2>
+          <ul className="list-disc list-inside">
+            {daysOfOperation.map((day, index) => (
+              <li key={index} className="mb-2">
+                <span className="font-semibold">{day.day}:</span> {day.opening} - {day.closing}
               </li>
             ))}
           </ul>

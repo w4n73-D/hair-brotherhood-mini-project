@@ -16,6 +16,7 @@ export default function BusinessDetailsPage() {
   const [error, setError] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [step, setStep] = useState<number>(1);
 
   const handleDayChange = (index: number, field: 'day' | 'opening' | 'closing', value: string) => {
     const newDays = [...daysOfOperation];
@@ -50,11 +51,11 @@ export default function BusinessDetailsPage() {
     try {
       const user = auth.currentUser;
       if (user) {
-        let imageUrl = '';
+        let uploadedImageUrl = '';
         if (file) {
           const storageRef = ref(storage, `businesses/${user.uid}/${file.name}`);
           await uploadBytes(storageRef, file);
-          imageUrl = await getDownloadURL(storageRef);
+          uploadedImageUrl = await getDownloadURL(storageRef);
         }
 
         await setDoc(doc(db, "businesses", user.uid), {
@@ -62,13 +63,21 @@ export default function BusinessDetailsPage() {
           bio,
           priceList,
           daysOfOperation,
-          imageUrl
+          imageUrl: uploadedImageUrl
         });
         router.push('/business-dashboard'); // Redirect to the business dashboard after submission
       }
     } catch (error: any) {
       setError(`Error updating details: ${error.message}`);
     }
+  };
+
+  const handleNextStep = () => {
+    setStep(step + 1);
+  };
+
+  const handlePrevStep = () => {
+    setStep(step - 1);
   };
 
   return (
@@ -85,118 +94,158 @@ export default function BusinessDetailsPage() {
         <h3 className="text-xl mb-6">Provide more details about your business</h3>
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">
-              Location *
-            </label>
-            <input
-              type="text"
-              id="location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Location"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bio">
-              Bio *
-            </label>
-            <textarea
-              id="bio"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Tell us about your business"
-              rows={4}
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Prices for Services *
-            </label>
-            {priceList.map((price, index) => (
-              <div key={index} className="flex mb-2 space-x-2">
+          {step === 1 && (
+            <>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">
+                  Location *
+                </label>
                 <input
                   type="text"
-                  value={price.service}
-                  onChange={(e) => handlePriceChange(index, 'service', e.target.value)}
-                  className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Service"
-                  required
-                />
-                <input
-                  type="text"
-                  value={price.price}
-                  onChange={(e) => handlePriceChange(index, 'price', e.target.value)}
-                  className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Price"
+                  id="location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="Location"
                   required
                 />
               </div>
-            ))}
-            <button
-              type="button"
-              onClick={handleAddPrice}
-              className="bg-zinc-900 text-white py-2 px-4 rounded-lg shadow hover:bg-orange-500 transition-colors"
-            >
-              Add Service
-            </button>
-          </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Days of Operation *
-            </label>
-            <div className="space-y-4 mb-4">
-              {daysOfOperation.map((day, index) => (
-                <div key={index} className="flex items-center space-x-4 mb-2">
-                  <input
-                    type="text"
-                    value={day.day}
-                    onChange={(e) => handleDayChange(index, 'day', e.target.value)}
-                    className="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder={index === 0 ? "Monday" : index === 1 ? "Tuesday" : index === 2 ? "Wednesday" : index === 3 ? "Thursday" : index === 4 ? "Friday" : index === 5 ? "Saturday" : "Sunday"}
-                    required
-                  />
-                  <input
-                    type="text"
-                    value={day.opening}
-                    onChange={(e) => handleDayChange(index, 'opening', e.target.value)}
-                    className="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Opening Hours"
-                    required
-                  />
-                  <input
-                    type="text"
-                    value={day.closing}
-                    onChange={(e) => handleDayChange(index, 'closing', e.target.value)}
-                    className="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Closing Hours"
-                    required
-                  />
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bio">
+                  Bio *
+                </label>
+                <textarea
+                  id="bio"
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="Tell us about your business"
+                  rows={4}
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Prices for Services *
+                </label>
+                {priceList.map((price, index) => (
+                  <div key={index} className="flex mb-2 space-x-2">
+                    <input
+                      type="text"
+                      value={price.service}
+                      onChange={(e) => handlePriceChange(index, 'service', e.target.value)}
+                      className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      placeholder="Service"
+                      required
+                    />
+                    <input
+                      type="text"
+                      value={price.price}
+                      onChange={(e) => handlePriceChange(index, 'price', e.target.value)}
+                      className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      placeholder="Price"
+                      required
+                    />
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={handleAddPrice}
+                  className="bg-zinc-900 text-white py-2 px-4 rounded-lg shadow hover:bg-orange-500 transition-colors"
+                >
+                  Add Service
+                </button>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Days of Operation *
+                </label>
+                <div className="space-y-4 mb-4">
+                  {daysOfOperation.map((day, index) => (
+                    <div key={index} className="flex items-center space-x-4 mb-2">
+                      <input
+                        type="text"
+                        value={day.day}
+                        onChange={(e) => handleDayChange(index, 'day', e.target.value)}
+                        className="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        placeholder={index === 0 ? "Monday" : index === 1 ? "Tuesday" : index === 2 ? "Wednesday" : index === 3 ? "Thursday" : index === 4 ? "Friday" : index === 5 ? "Saturday" : "Sunday"}
+                        required
+                      />
+                      <input
+                        type="text"
+                        value={day.opening}
+                        onChange={(e) => handleDayChange(index, 'opening', e.target.value)}
+                        className="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        placeholder="Opening Hours"
+                        required
+                      />
+                      <input
+                        type="text"
+                        value={day.closing}
+                        onChange={(e) => handleDayChange(index, 'closing', e.target.value)}
+                        className="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        placeholder="Closing Hours"
+                        required
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={handleAddDay}
-              className="bg-zinc-900 text-white py-2 px-4 rounded-lg shadow hover:bg-orange-500 transition-colors"
-            >
-              Add Day
-            </button>
-          </div>
+                <button
+                  type="button"
+                  onClick={handleAddDay}
+                  className="bg-zinc-900 text-white py-2 px-4 rounded-lg shadow hover:bg-orange-500 transition-colors"
+                >
+                  Add Day
+                </button>
+              </div>
 
-          <button
-            type="submit"
-            className="bg-zinc-900 w-full text-white text-center py-2 rounded-lg shadow hover:bg-orange-500 transition-colors"
-          >
-            Save and Continue
-          </button>
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="bg-zinc-900 text-white py-2 px-4 rounded-lg shadow hover:bg-orange-500 transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="businessImage">
+                  Upload Business Image
+                </label>
+                <input
+                  type="file"
+                  id="businessImage"
+                  onChange={handleFileChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+                {imageUrl && <Image src={imageUrl} alt="Business Image" width={200} height={200} />}
+              </div>
+
+              <div className="flex justify-between">
+                <button
+                  type="button"
+                  onClick={handlePrevStep}
+                  className="bg-zinc-900 text-white py-2 px-4 rounded-lg shadow hover:bg-orange-500 transition-colors"
+                >
+                  Previous
+                </button>
+                <button
+                  type="submit"
+                  className="bg-zinc-900 text-white py-2 px-4 rounded-lg shadow hover:bg-orange-500 transition-colors"
+                >
+                  Save and Continue
+                </button>
+              </div>
+            </>
+          )}
 
           {error && <p className="text-red-500 mt-4">{error}</p>}
         </form>
