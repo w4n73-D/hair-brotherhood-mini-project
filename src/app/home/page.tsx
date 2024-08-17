@@ -4,14 +4,12 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { db, auth } from '../firebase/config';
-import { barberShops, newBarberShops, favBarberShops } from '../data/shops';
-import { reviews } from '../data/reviews';
-import { collection, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 
 export default function HomePage() {
   const [search, setSearch] = useState('');
-  const [filteredShops, setFilteredShops] = useState(barberShops);
+  const [filteredShops, setFilteredShops] = useState<any[]>([]);
   const [currentIndexRecommended, setCurrentIndexRecommended] = useState(0);
   const [currentIndexNew, setCurrentIndexNew] = useState(0);
   const [currentIndexFavorite, setCurrentIndexFavorite] = useState(0);
@@ -22,16 +20,38 @@ export default function HomePage() {
   const [userImage, setUserImage] = useState(''); // For displaying user image
 
   useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const shopsCollection = collection(db, 'businesses');
+        const shopsSnapshot = await getDocs(shopsCollection);
+        const shopsList = shopsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setFilteredShops(shopsList);
+        setCurrentIndexRecommended(0);
+        setCurrentIndexNew(0);
+        setCurrentIndexFavorite(0);
+      } catch (error) {
+        console.error('Error fetching shops:', error);
+      }
+    };
+
+    fetchShops();
+  }, []);
+
+  useEffect(() => {
     // Fetch user data from Firestore
     const fetchUserData = async () => {
       const user = auth.currentUser;
       if (user) {
-        const userDoc = doc(collection(db, 'users'), user.uid);
-        const docSnap = await getDoc(userDoc);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setUserName(`${data.firstName} ${data.lastName}`);
-          setUserImage(data.profileImageUrl); // Assuming you store the profile image URL
+        try {
+          const userDoc = doc(collection(db, 'users'), user.uid);
+          const docSnap = await getDoc(userDoc);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setUserName(`${data.firstName} ${data.lastName}`);
+            setUserImage(data.profileImageUrl); // Assuming you store the profile image URL
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
         }
       }
     };
@@ -45,8 +65,8 @@ export default function HomePage() {
   };
 
   const filterShops = (query: string) => {
-    const filtered = barberShops.filter(shop =>
-      shop.name.toLowerCase().includes(query.toLowerCase()) ||
+    const filtered = filteredShops.filter(shop =>
+      shop.businessName.toLowerCase().includes(query.toLowerCase()) ||
       shop.location.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredShops(filtered);
@@ -174,7 +194,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Remaining Sections */}
       {/* Recommended Places Section */}
       <div className="w-full p-8">
         <h2 className="text-3xl font-bold text-center mb-8">Recommended Places</h2>
@@ -187,34 +206,40 @@ export default function HomePage() {
             &lt;
           </button>
           <div className="flex space-x-4 overflow-x-auto">
-            {barberShops.slice(currentIndexRecommended, currentIndexRecommended + itemsPerPage).map((shop) => (
-              <Link key={shop.id} href={`/shops/${shop.id}`} className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
-                <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
-                <div className="p-4">
-                  <h3 className="text-xl font-bold">{shop.name}</h3>
-                  <p className="text-gray-600">{shop.location}</p>
-                  <div className="flex items-center mt-2">
-                    <span className="text-yellow-400 mr-2">★</span>
-                    <span>{shop.rating}</span>
+            {filteredShops.slice(currentIndexRecommended, currentIndexRecommended + itemsPerPage).map((shop) => (
+              <Link key={shop.id} href={`/shop/${shop.id}`} className="flex-none w-64 bg-white shadow-lg rounded-lg overflow-hidden">
+                <div className="relative">
+                  <Image
+                    src={shop.businessImageUrls[0]} // Assuming images is an array of image URLs
+                    alt={shop.businessName}
+                    width={256}
+                    height={160}
+                    className="w-full h-40 object-cover"
+                  />
+                  <div className="absolute top-0 left-0 p-2 bg-gray-800 text-white text-xs rounded-br-lg">
+                    {shop.location}
                   </div>
-                  <p className="text-gray-800 mt-2">{shop.price}</p>
+                </div>
+                <div className="p-4">
+                  <h3 className="text-xl font-semibold mb-2">{shop.businessName}</h3>
+                  <p className="text-gray-600">{shop.location}</p>
                 </div>
               </Link>
             ))}
           </div>
           <button
             className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
-            onClick={() => nextPage(setCurrentIndexRecommended, currentIndexRecommended, barberShops.length)}
-            disabled={currentIndexRecommended + itemsPerPage >= barberShops.length}
+            onClick={() => nextPage(setCurrentIndexRecommended, currentIndexRecommended, filteredShops.length)}
+            disabled={currentIndexRecommended + itemsPerPage >= filteredShops.length}
           >
             &gt;
           </button>
         </div>
       </div>
 
-      {/* New Barbershops Section */}
+      {/* New Places Section */}
       <div className="w-full p-8">
-        <h2 className="text-3xl font-bold text-center mb-8">New Barbershops</h2>
+        <h2 className="text-3xl font-bold text-center mb-8">New Places</h2>
         <div className="relative flex justify-center">
           <button
             className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
@@ -224,25 +249,31 @@ export default function HomePage() {
             &lt;
           </button>
           <div className="flex space-x-4 overflow-x-auto">
-            {newBarberShops.slice(currentIndexNew, currentIndexNew + itemsPerPage).map((shop) => (
-              <Link key={shop.id} href={`/shops/${shop.id}`} className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
-                <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
-                <div className="p-4">
-                  <h3 className="text-xl font-bold">{shop.name}</h3>
-                  <p className="text-gray-600">{shop.location}</p>
-                  <div className="flex items-center mt-2">
-                    <span className="text-yellow-400 mr-2">★</span>
-                    <span>{shop.rating}</span>
+            {filteredShops.slice(currentIndexNew, currentIndexNew + itemsPerPage).map((shop) => (
+              <Link key={shop.id} href={`/shop/${shop.id}`} className="flex-none w-64 bg-white shadow-lg rounded-lg overflow-hidden">
+                <div className="relative">
+                  <Image
+                    src={shop.businessImageUrls[0]} // Assuming images is an array of image URLs
+                    alt={shop.businessName}
+                    width={256}
+                    height={160}
+                    className="w-full h-40 object-cover"
+                  />
+                  <div className="absolute top-0 left-0 p-2 bg-gray-800 text-white text-xs rounded-br-lg">
+                    {shop.location}
                   </div>
-                  <p className="text-gray-800 mt-2">{shop.price}</p>
+                </div>
+                <div className="p-4">
+                  <h3 className="text-xl font-semibold mb-2">{shop.businessName}</h3>
+                  <p className="text-gray-600">{shop.location}</p>
                 </div>
               </Link>
             ))}
           </div>
           <button
             className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
-            onClick={() => nextPage(setCurrentIndexNew, currentIndexNew, newBarberShops.length)}
-            disabled={currentIndexNew + itemsPerPage >= newBarberShops.length}
+            onClick={() => nextPage(setCurrentIndexNew, currentIndexNew, filteredShops.length)}
+            disabled={currentIndexNew + itemsPerPage >= filteredShops.length}
           >
             &gt;
           </button>
@@ -261,62 +292,31 @@ export default function HomePage() {
             &lt;
           </button>
           <div className="flex space-x-4 overflow-x-auto">
-            {favBarberShops.slice(currentIndexFavorite, currentIndexFavorite + itemsPerPage).map((shop) => (
-              <Link key={shop.id} href={`/shops/${shop.id}`} className="bg-white shadow-lg rounded-lg overflow-hidden w-80 cursor-pointer">
-                <Image src={shop.imageUrl} alt={shop.name} width={400} height={300} />
-                <div className="p-4">
-                  <h3 className="text-xl font-bold">{shop.name}</h3>
-                  <p className="text-gray-600">{shop.location}</p>
-                  <div className="flex items-center mt-2">
-                    <span className="text-yellow-400 mr-2">★</span>
-                    <span>{shop.rating}</span>
+            {filteredShops.slice(currentIndexFavorite, currentIndexFavorite + itemsPerPage).map((shop) => (
+              <Link key={shop.id} href={`/shop/${shop.id}`} className="flex-none w-64 bg-white shadow-lg rounded-lg overflow-hidden">
+                <div className="relative">
+                  <Image
+                    src={shop.businessImageUrls[0]} // Assuming images is an array of image URLs
+                    alt={shop.businessName}
+                    width={256}
+                    height={160}
+                    className="w-full h-40 object-cover"
+                  />
+                  <div className="absolute top-0 left-0 p-2 bg-gray-800 text-white text-xs rounded-br-lg">
+                    {shop.location}
                   </div>
-                  <p className="text-gray-800 mt-2">{shop.price}</p>
+                </div>
+                <div className="p-4">
+                  <h3 className="text-xl font-semibold mb-2">{shop.businessName}</h3>
+                  <p className="text-gray-600">{shop.location}</p>
                 </div>
               </Link>
             ))}
           </div>
           <button
             className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
-            onClick={() => nextPage(setCurrentIndexFavorite, currentIndexFavorite, favBarberShops.length)}
-            disabled={currentIndexFavorite + itemsPerPage >= favBarberShops.length}
-          >
-            &gt;
-          </button>
-        </div>
-      </div>
-
-      {/* Reviews Section */}
-      <div className="w-full p-8">
-        <h2 className="text-3xl font-bold text-center mb-8">Reviews</h2>
-        <div className="relative flex justify-center">
-          <button
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
-            onClick={() => prevPage(setCurrentIndexRecommended, currentIndexRecommended)}
-            disabled={currentIndexRecommended === 0}
-          >
-            &lt;
-          </button>
-          <div className="flex space-x-4 overflow-x-auto">
-            {reviews.slice(currentIndexRecommended, currentIndexRecommended + itemsPerPage).map((review) => (
-              <div key={review.id} className="bg-white shadow-lg rounded-lg overflow-hidden w-80">
-                <div className="p-4">
-                  <h3 className="text-xl font-bold">{review.reviewerName}</h3>
-                  <p className="text-gray-800 mt-2">{review.reviewText}</p>
-                  <div className="flex items-center mt-2">
-                    <span className="text-yellow-400 mr-2">★</span>
-                    <span>{review.rating}</span>
-                  </div>
-                  <p className="text-gray-600 mt-2">{review.shopName}</p>
-                </div>
-                <Image src={review.shopImageUrl} alt={review.shopName} width={400} height={300} />
-              </div>
-            ))}
-          </div>
-          <button
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"
-            onClick={() => nextPage(setCurrentIndexRecommended, currentIndexRecommended, reviews.length)}
-            disabled={currentIndexRecommended + itemsPerPage >= reviews.length}
+            onClick={() => nextPage(setCurrentIndexFavorite, currentIndexFavorite, filteredShops.length)}
+            disabled={currentIndexFavorite + itemsPerPage >= filteredShops.length}
           >
             &gt;
           </button>
