@@ -28,6 +28,7 @@ interface Shop {
   businessImageUrls: string[];
   daysOfOperation: DayOfOperation[];
   priceList: PriceItem[];
+  bio: string;
 }
 
 const ShopPage = ({ params }: { params: { id: string } }) => {
@@ -85,7 +86,7 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
       <div className="w-full max-w-screen-lg mx-auto mt-[60px]">
 
         {/* Shop Name and Contact */}
-        <div className="text-center mb-[10px]">
+        <div className="text-center mb-[10px] flex space-x-6">
           <h1 className="text-3xl font-bold mb-2">{shop.businessName}</h1>
           <p className="text-lg mb-2">Location: {shop.location}</p>
           <p className="text-lg mb-2">Phone: {shop.phoneNumber}</p>
@@ -112,6 +113,11 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
             </div>
           </div>
         </div>
+
+        <div className="text-center mb-[10px]">
+          <p className="text-lg mb-2">Bio: {shop.bio}</p>
+        </div>
+
 
         {/* Days of Operation */}
         <div className="w-full mb-8">
