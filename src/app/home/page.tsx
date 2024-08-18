@@ -38,7 +38,6 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    // Fetch user data from Firestore
     const fetchUserData = async () => {
       const user = auth.currentUser;
       if (user) {
@@ -238,7 +237,7 @@ export default function HomePage() {
       </div>
 
       {/* New Places Section */}
-      <div className="w-full p-8">
+      <div className="w-full p-8 bg-gray-100">
         <h2 className="text-3xl font-bold text-center mb-8">New Places</h2>
         <div className="relative flex justify-center">
           <button
