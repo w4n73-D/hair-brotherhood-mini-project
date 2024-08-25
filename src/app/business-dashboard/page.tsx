@@ -7,7 +7,6 @@ import { auth, db } from '../firebase/config';
 import Image from 'next/image';
 import BusinessHeader from '../header/business_header';
 
-
 interface PriceItem {
   service: string;
   price: number;
@@ -19,7 +18,12 @@ interface DayOfOperation {
   closing: string;
 }
 
-
+interface Appointment {
+  id: string;
+  customerName: string;
+  service: string;
+  time: string;
+}
 
 export default function DashboardPage() {
   const [businessData, setBusinessData] = useState<any>(null);
@@ -31,6 +35,16 @@ export default function DashboardPage() {
   const [customerNames, setCustomerNames] = useState<{ [key: string]: string }>({});
   const [customers, setCustomers] = useState<{ id: string, name: string }[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
+  const [appointmentsOpen, setAppointmentsOpen] = useState<boolean>(false);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [newBio, setNewBio] = useState<string>('');
+  const [newPriceService, setNewPriceService] = useState<string>('');
+  const [newPrice, setNewPrice] = useState<number | ''>('');
+  const [newDay, setNewDay] = useState<string>('');
+  const [newOpening, setNewOpening] = useState<string>('');
+  const [newClosing, setNewClosing] = useState<string>('');
+  const [priceList, setPriceList] = useState<PriceItem[]>([]);
+  const [daysOfOperation, setDaysOfOperation] = useState<DayOfOperation[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -43,6 +57,9 @@ export default function DashboardPage() {
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             setBusinessData(docSnap.data());
+            setNewBio(docSnap.data().bio || '');
+            setPriceList(docSnap.data().priceList || []);
+            setDaysOfOperation(docSnap.data().daysOfOperation || []);
           } else {
             console.error('No such document!');
           }
@@ -97,6 +114,26 @@ export default function DashboardPage() {
     }
   }, [selectedCustomer, user]);
 
+  useEffect(() => {
+    if (user && user.uid) {
+      const appointmentsQuery = query(
+        collection(db, 'appointments'),
+        where('barberId', '==', user.uid),
+        orderBy('time')
+      );
+
+      const unsubscribe = onSnapshot(appointmentsQuery, (snapshot) => {
+        const fetchedAppointments = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as Appointment[];
+        setAppointments(fetchedAppointments);
+      });
+
+      return () => unsubscribe();
+    }
+  }, [user]);
+
   const handleSendMessage = async () => {
     if (message.trim() && user && selectedCustomer) {
       try {
@@ -131,6 +168,59 @@ export default function DashboardPage() {
     setChatOpen(true);
   };
 
+  const handleOpenAppointments = () => {
+    setAppointmentsOpen(true);
+  };
+
+  const handleCloseAppointments = () => {
+    setAppointmentsOpen(false);
+  };
+
+  const handleAddPrice = async () => {
+    if (newPriceService.trim() && newPrice !== '' && typeof newPrice === 'number') {
+      try {
+        const updatedPriceList = [...priceList, { service: newPriceService, price: newPrice }];
+        setPriceList(updatedPriceList);
+        if (user) {
+          await updateDoc(doc(db, 'businesses', user.uid), { priceList: updatedPriceList });
+        }
+        setNewPriceService('');
+        setNewPrice('');
+      } catch (error) {
+        console.error('Error updating price list:', error);
+      }
+    }
+  };
+
+  const handleAddDay = async () => {
+    if (newDay.trim() && newOpening.trim() && newClosing.trim()) {
+      try {
+        const updatedDays = [...daysOfOperation, { day: newDay, opening: newOpening, closing: newClosing }];
+        setDaysOfOperation(updatedDays);
+        if (user) {
+          await updateDoc(doc(db, 'businesses', user.uid), { daysOfOperation: updatedDays });
+        }
+        setNewDay('');
+        setNewOpening('');
+        setNewClosing('');
+      } catch (error) {
+        console.error('Error updating days of operation:', error);
+      }
+    }
+  };
+
+  const handleBioChange = async () => {
+    if (newBio.trim()) {
+      try {
+        if (user) {
+          await updateDoc(doc(db, 'businesses', user.uid), { bio: newBio });
+        }
+      } catch (error) {
+        console.error('Error updating bio:', error);
+      }
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -139,7 +229,7 @@ export default function DashboardPage() {
     return <div>No business data found.</div>;
   }
 
-  const { businessName, businessImageUrls = [], bio, priceList = [], daysOfOperation = [], location } = businessData;
+  const { businessName, businessImageUrls = [], location } = businessData;
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -183,95 +273,168 @@ export default function DashboardPage() {
 
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Business Bio</h2>
-            <p className="text-gray-700">{bio}</p>
+            <textarea
+              value={newBio}
+              onChange={(e) => setNewBio(e.target.value)}
+              rows={4}
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              placeholder="Write a bio about your business..."
+            />
+            <button
+              onClick={handleBioChange}
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
+            >
+              Update Bio
+            </button>
           </div>
 
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Price List</h2>
-            <ul className="list-disc list-inside">
-              {priceList.map((price: PriceItem, index: number) => (
-                <li key={index} className="mb-2">
-                  <span className="font-semibold">{price.service}:</span> ${price.price}
-                </li>
-              ))}
-            </ul>
+            {priceList.map((item, index) => (
+              <div key={index} className="flex justify-between p-2 border-b border-gray-300">
+                <span>{item.service}</span>
+                <span>${(typeof item.price === 'number' ? item.price.toFixed(2) : '0.00')}</span>
+              </div>
+            ))}
+            <div className="mt-4">
+              <input
+                type="text"
+                placeholder="Service"
+                value={newPriceService}
+                onChange={(e) => setNewPriceService(e.target.value)}
+                className="p-2 border border-gray-300 rounded-lg mr-2"
+              />
+              <input
+                type="number"
+                placeholder="Price"
+                value={newPrice}
+                onChange={(e) => setNewPrice(Number(e.target.value))}
+                className="p-2 border border-gray-300 rounded-lg mr-2"
+              />
+              <button
+                onClick={handleAddPrice}
+                className="px-4 py-2 bg-green-500 text-white rounded-lg"
+              >
+                Add Price
+              </button>
+            </div>
           </div>
 
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Days of Operation</h2>
-            <ul className="list-disc list-inside">
-              {daysOfOperation.map((day: DayOfOperation, index: number) => (
-                <li key={index} className="mb-2">
-                  <span className="font-semibold">{day.day}:</span> {day.opening} - {day.closing}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="mb-8">
-            <button
-              onClick={handleOpenChat}
-              className="bg-orange-300 text-center rounded-xl h-[30px] w-[170px]"
-            >
-              Check Bookings
-            </button>
-          </div>
-        </div>
-
-        {/* Chat Box Section */}
-        {chatOpen && (
-          <div className="fixed bottom-0 right-0 w-96 bg-white p-4 rounded-t-lg shadow-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold">Chat</h3>
-              <button onClick={handleCloseChat} className="text-gray-600">
-                Close
-              </button>
-            </div>
-
-            <div className="flex flex-col mb-4">
-              {customers.map((customer) => (
-                <button
-                  key={customer.id}
-                  onClick={() => handleSelectCustomer(customer.id)}
-                  className={`p-2 text-left ${
-                    selectedCustomer === customer.id ? 'bg-gray-200' : 'bg-gray-100'
-                  } rounded-lg mb-2`}
-                >
-                  {customer.name}
-                </button>
-              ))}
-            </div>
-
-            <div className="overflow-y-auto h-64 border-t border-b mb-4">
-              {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`p-2 my-1 rounded-lg ${
-                    msg.senderId === user?.uid ? 'bg-blue-100 ml-auto' : 'bg-gray-100 mr-auto'
-                  }`}
-                >
-                  {msg.content}
+            <div>
+              {daysOfOperation.map((day, index) => (
+                <div key={index} className="flex justify-between p-2 border-b border-gray-300">
+                  <span>{day.day}</span>
+                  <span>{day.opening} - {day.closing}</span>
                 </div>
               ))}
-            </div>
-
-            <div className="flex items-center">
-              <input
-                type="text"
-                value={message}
-                onChange={handleMessageChange}
-                className="flex-1 border rounded-lg p-2 mr-2"
-                placeholder="Type a message..."
-              />
-              <button
-                onClick={handleSendMessage}
-                className="bg-blue-500 text-white rounded-lg px-4 py-2"
-              >
-                Send
-              </button>
+              <div className="mt-4">
+                <input
+                  type="text"
+                  placeholder="Day"
+                  value={newDay}
+                  onChange={(e) => setNewDay(e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg mr-2"
+                />
+                <input
+                  type="text"
+                  placeholder="Opening Time"
+                  value={newOpening}
+                  onChange={(e) => setNewOpening(e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg mr-2"
+                />
+                <input
+                  type="text"
+                  placeholder="Closing Time"
+                  value={newClosing}
+                  onChange={(e) => setNewClosing(e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg mr-2"
+                />
+                <button
+                  onClick={handleAddDay}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                >
+                  Add Day
+                </button>
+              </div>
             </div>
           </div>
-        )}
+
+          <div className="flex justify-between">
+            <button
+              onClick={handleOpenChat}
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg"
+            >
+              Chat with Customers
+            </button>
+            <button
+              onClick={handleOpenAppointments}
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg"
+            >
+              View Appointments
+            </button>
+          </div>
+
+          {chatOpen && (
+            <div className="fixed top-0 right-0 w-full max-w-md bg-white shadow-lg rounded-lg p-6">
+              <button onClick={handleCloseChat} className="absolute top-2 right-2 text-gray-500">&times;</button>
+              <h3 className="text-xl font-bold mb-4">Chat</h3>
+              <div className="mb-4">
+                <select
+                  onChange={(e) => handleSelectCustomer(e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg"
+                >
+                  <option value="">Select Customer</option>
+                  {customers.map(customer => (
+                    <option key={customer.id} value={customer.id}>
+                      {customer.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-4 overflow-y-auto h-64">
+                {messages.map((msg, index) => (
+                  <div key={index} className={`mb-2 ${msg.senderId === user?.uid ? 'text-right' : 'text-left'}`}>
+                    <p className={`p-2 rounded-lg ${msg.senderId === user?.uid ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}>
+                      {msg.content}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <div className="flex">
+                <input
+                  type="text"
+                  value={message}
+                  onChange={handleMessageChange}
+                  className="flex-1 p-2 border border-gray-300 rounded-lg"
+                />
+                <button
+                  onClick={handleSendMessage}
+                  className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+          )}
+
+          {appointmentsOpen && (
+            <div className="fixed top-0 right-0 w-full max-w-md bg-white shadow-lg rounded-lg p-6">
+              <button onClick={handleCloseAppointments} className="absolute top-2 right-2 text-gray-500">&times;</button>
+              <h3 className="text-xl font-bold mb-4">Appointments</h3>
+              <div className="overflow-y-auto h-64">
+                {appointments.map((appointment) => (
+                  <div key={appointment.id} className="mb-4 p-4 border border-gray-300 rounded-lg">
+                    <h4 className="text-lg font-semibold">{appointment.customerName}</h4>
+                    <p>{appointment.service}</p>
+                    <p>{appointment.time}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

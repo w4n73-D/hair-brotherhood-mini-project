@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase/config'; // Adjust the path as needed
 import Image from 'next/image';
-import Header from '@/app/header/header'; // Adjust the path as needed'
+import Header from '@/app/header/header'; // Adjust the path as needed
 
 interface DayOfOperation {
   day: string;
@@ -38,6 +38,9 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<any[]>([]);
   const [user, setUser] = useState<{ uid: string }>({ uid: 'testUserId' }); // Replace with actual user state
+  const [appointmentOpen, setAppointmentOpen] = useState<boolean>(false);
+  const [service, setService] = useState<string>('');
+  const [time, setTime] = useState<string>('');
   const router = useRouter();
   const shopId = params.id;
 
@@ -72,12 +75,12 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
         where('senderId', 'in', [shopId, user.uid]),
         orderBy('timestamp')
       );
-  
+
       const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
         const fetchedMessages = snapshot.docs.map(doc => doc.data());
         setMessages(fetchedMessages);
       });
-  
+
       return () => unsubscribe();
     }
   }, [shopId, user]);
@@ -108,6 +111,42 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
 
   const handleCloseChat = () => {
     setChatOpen(false);
+  };
+
+  const handleOpenAppointment = () => {
+    setAppointmentOpen(true);
+  };
+
+  const handleCloseAppointment = () => {
+    setAppointmentOpen(false);
+    setService('');
+    setTime('');
+  };
+
+  const handleServiceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setService(e.target.value);
+  };
+
+  const handleTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTime(e.target.value);
+  };
+
+  const handleBookAppointment = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (service.trim() && time.trim()) {
+      try {
+        await addDoc(collection(db, 'appointments'), {
+          shopId,
+          userId: user.uid,
+          service,
+          time,
+          timestamp: new Date(),
+        });
+        handleCloseAppointment();
+      } catch (error) {
+        console.error('Error booking appointment:', error);
+      }
+    }
   };
 
   if (loading) {
@@ -194,7 +233,10 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
 
         {/* Booking and Chat */}
         <div className="w-[700px] flex justify-between mb-8">
-          <button className="bg-orange-300 text-center rounded-xl h-[30px] w-[170px]">
+          <button
+            onClick={handleOpenAppointment}
+            className="bg-orange-300 text-center rounded-xl h-[30px] w-[170px]"
+          >
             Book an Appointment
           </button>
           <button
@@ -207,40 +249,77 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
       </div>
 
       {chatOpen && (
-        <div className="fixed bottom-0 right-0 m-4 p-4 bg-white shadow-lg rounded-lg w-80">
-          <div className="flex flex-col mb-2">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="font-bold">{shop.firstName} {shop.lastName}</h3>
-              <button onClick={handleCloseChat} className="text-red-500">✖️</button>
-            </div>
+        <div className="fixed bottom-0 right-0 m-4 p-4 bg-white border border-gray-200 rounded-lg shadow-lg w-80">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-lg font-bold">Chat with {shop.businessName}</h3>
+            <button onClick={handleCloseChat} className="text-red-500">Close</button>
           </div>
-          <div className="overflow-y-auto h-64">
+          <div className="overflow-y-auto max-h-[300px] mb-2">
             {messages.map((msg, index) => (
               <div key={index} className={`mb-2 ${msg.senderId === user.uid ? 'text-right' : 'text-left'}`}>
-                <p className={`p-2 rounded ${msg.senderId === user.uid ? 'bg-blue-200' : 'bg-gray-200'}`}>
-                  {msg.content}
-                </p>
-                <span className="text-sm text-gray-500">
-                  {new Date(msg.timestamp.toDate()).toLocaleTimeString()}
-                </span>
+                <p className="bg-gray-100 p-2 rounded-lg inline-block">{msg.content}</p>
               </div>
             ))}
           </div>
-          <div className="flex mt-2">
+          <div className="flex">
             <input
               type="text"
               value={message}
               onChange={handleMessageChange}
-              className="w-full p-2 border border-gray-300 rounded-tl-lg rounded-bl-lg"
+              className="flex-1 border border-gray-300 p-2 rounded-lg"
               placeholder="Type your message..."
             />
             <button
               onClick={handleSendMessage}
-              className="bg-blue-500 text-white p-2 rounded-tr-lg rounded-br-lg ml-2"
-              style={{ height: '2.5rem', width: '3rem' }} // Resize button
+              className="ml-2 bg-blue-500 text-white p-2 rounded-lg"
             >
               Send
             </button>
+          </div>
+        </div>
+      )}
+
+      {appointmentOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h3 className="text-xl font-bold mb-4">Book an Appointment</h3>
+            <form onSubmit={handleBookAppointment}>
+              <div className="mb-4">
+                <label htmlFor="service" className="block text-sm font-medium mb-1">Service</label>
+                <input
+                  id="service"
+                  type="text"
+                  value={service}
+                  onChange={handleServiceChange}
+                  className="border border-gray-300 p-2 rounded-lg w-full"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="time" className="block text-sm font-medium mb-1">Preferred Time</label>
+                <input
+                  id="time"
+                  type="text"
+                  value={time}
+                  onChange={handleTimeChange}
+                  className="border border-gray-300 p-2 rounded-lg w-full"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg w-full"
+              >
+                Book Appointment
+              </button>
+              <button
+                type="button"
+                onClick={handleCloseAppointment}
+                className="mt-2 bg-gray-300 text-black py-2 px-4 rounded-lg w-full"
+              >
+                Cancel
+              </button>
+            </form>
           </div>
         </div>
       )}
