@@ -10,7 +10,7 @@ interface HeaderNavProps {
   onLoginClick: () => void;
 }
 
-// Apply the type to the component
+// Define the HeaderNav component
 const HeaderNav: FC<HeaderNavProps> = ({ showLoginForm, onLoginClick }) => {
   return (
     <div className="flex fixed top-0 w-full justify-between items-center px-10 bg-opacity-75 py-4 z-10">
@@ -37,4 +37,5 @@ const HeaderNav: FC<HeaderNavProps> = ({ showLoginForm, onLoginClick }) => {
   );
 };
 
+// Export HeaderNav as default
 export default HeaderNav;
