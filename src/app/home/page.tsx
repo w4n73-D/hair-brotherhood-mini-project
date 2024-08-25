@@ -281,7 +281,7 @@ export default function HomePage() {
 
       {/* People's Favorite Section */}
       <div className="w-full p-8">
-        <h2 className="text-3xl font-bold text-center mb-8">People's Favorite</h2>
+        <h2 className="text-3xl font-bold text-center mb-8">People&apos;s Favorite</h2>
         <div className="relative flex justify-center">
           <button
             className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full"

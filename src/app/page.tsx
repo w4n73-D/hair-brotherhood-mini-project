@@ -134,7 +134,7 @@ export default function Home() {
                 </div>
                 <div className="text-left">
                   <p className={`text-sm ${isBusinessLogin ? 'text-white' : 'text-gray-700'}`}>
-                    If you don't have an account,{' '}
+                    If you don&apos;t have an account,{' '}
                     <span
                       className="text-blue-500 hover:text-blue-700 font-bold underline cursor-pointer"
                       onClick={handleSignUpRedirect}
