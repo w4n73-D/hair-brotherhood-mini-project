@@ -138,7 +138,7 @@ export default function SignupPage() {
         ) : (
           <div className="flex flex-col justify-center h-full">
             <h1 className="text-3xl font-bold mb-2">Create account</h1>
-            <h3 className="text-xl mb-6">You&apos;re almost there! Create your new account for {email}</h3>
+            <h3 className="text-xl mb-6">You{"'"}re almost there! Create your new account for {email}</h3>
 
             <form onSubmit={handleSubmit}>
               <div className="mb-4">

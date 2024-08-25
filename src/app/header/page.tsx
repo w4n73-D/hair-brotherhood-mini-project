@@ -1,9 +1,16 @@
 'use client'
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { FC } from 'react';
 
-export default function HeaderNav({ showLoginForm, onLoginClick }) {
+// Define the type for the props
+interface HeaderNavProps {
+  showLoginForm: boolean;
+  onLoginClick: () => void;
+}
+
+// Apply the type to the component
+const HeaderNav: FC<HeaderNavProps> = ({ showLoginForm, onLoginClick }) => {
   return (
     <div className="flex fixed top-0 w-full justify-between items-center px-10 bg-opacity-75 py-4 z-10">
       <div>
@@ -27,4 +34,6 @@ export default function HeaderNav({ showLoginForm, onLoginClick }) {
       </div>
     </div>
   );
-}
+};
+
+export default HeaderNav;
