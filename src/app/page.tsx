@@ -61,18 +61,6 @@ export default function Home() {
           <p className="mb-4">
             Our aim is to connect people to their favorite barbers or any barber around them with ease.
           </p>
-          <p className="mb-4">
-            Look up your preferred shop using the search bar below:
-          </p>
-          <div className="flex">
-            <input
-              type="text"
-              placeholder="Enter name of preferred shop"
-              className="border p-2 rounded-l"
-              aria-label="Search for preferred shop"
-            />
-            <button className="bg-orange-500 text-white p-2 rounded-r">Search</button>
-          </div>
         </div>
       </div>
 
