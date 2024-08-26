@@ -363,62 +363,12 @@ export default function DashboardPage() {
 
           <div className="flex justify-between">
             <button
-              onClick={handleOpenChat}
-              className="px-4 py-2 bg-gray-500 text-white rounded-lg"
-            >
-              Chat with Customers
-            </button>
-            <button
               onClick={handleOpenAppointments}
               className="px-4 py-2 bg-gray-500 text-white rounded-lg"
             >
               View Appointments
             </button>
           </div>
-
-          {chatOpen && (
-            <div className="fixed top-0 right-0 w-full max-w-md bg-white shadow-lg rounded-lg p-6">
-              <button onClick={handleCloseChat} className="absolute top-2 right-2 text-gray-500">&times;</button>
-              <h3 className="text-xl font-bold mb-4">Chat</h3>
-              <div className="mb-4">
-                <select
-                  onChange={(e) => handleSelectCustomer(e.target.value)}
-                  className="p-2 border border-gray-300 rounded-lg"
-                >
-                  <option value="">Select Customer</option>
-                  {customers.map(customer => (
-                    <option key={customer.id} value={customer.id}>
-                      {customer.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mb-4 overflow-y-auto h-64">
-                {messages.map((msg, index) => (
-                  <div key={index} className={`mb-2 ${msg.senderId === user?.uid ? 'text-right' : 'text-left'}`}>
-                    <p className={`p-2 rounded-lg ${msg.senderId === user?.uid ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}>
-                      {msg.content}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <div className="flex">
-                <input
-                  type="text"
-                  value={message}
-                  onChange={handleMessageChange}
-                  className="flex-1 p-2 border border-gray-300 rounded-lg"
-                />
-                <button
-                  onClick={handleSendMessage}
-                  className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
-                >
-                  Send
-                </button>
-              </div>
-            </div>
-          )}
-
           {appointmentsOpen && (
             <div className="fixed top-0 right-0 w-full max-w-md bg-white shadow-lg rounded-lg p-6">
               <button onClick={handleCloseAppointments} className="absolute top-2 right-2 text-gray-500">&times;</button>

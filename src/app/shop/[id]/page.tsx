@@ -239,45 +239,8 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
           >
             Book an Appointment
           </button>
-          <button
-            onClick={handleOpenChat}
-            className="bg-orange-300 text-center rounded-xl h-[30px] w-[170px]"
-          >
-            Send a message
-          </button>
         </div>
       </div>
-
-      {chatOpen && (
-        <div className="fixed bottom-0 right-0 m-4 p-4 bg-white border border-gray-200 rounded-lg shadow-lg w-80">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-bold">Chat with {shop.businessName}</h3>
-            <button onClick={handleCloseChat} className="text-red-500">Close</button>
-          </div>
-          <div className="overflow-y-auto max-h-[300px] mb-2">
-            {messages.map((msg, index) => (
-              <div key={index} className={`mb-2 ${msg.senderId === user.uid ? 'text-right' : 'text-left'}`}>
-                <p className="bg-gray-100 p-2 rounded-lg inline-block">{msg.content}</p>
-              </div>
-            ))}
-          </div>
-          <div className="flex">
-            <input
-              type="text"
-              value={message}
-              onChange={handleMessageChange}
-              className="flex-1 border border-gray-300 p-2 rounded-lg"
-              placeholder="Type your message..."
-            />
-            <button
-              onClick={handleSendMessage}
-              className="ml-2 bg-blue-500 text-white p-2 rounded-lg"
-            >
-              Send
-            </button>
-          </div>
-        </div>
-      )}
 
       {appointmentOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
