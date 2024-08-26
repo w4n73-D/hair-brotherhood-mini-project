@@ -25,6 +25,7 @@ interface Appointment {
   service: string;
   time: string;
   customerPhone: string;
+  shopId: string; // Added shopId to match appointments to shops
 }
 
 export default function DashboardPage() {
@@ -51,10 +52,11 @@ export default function DashboardPage() {
           const docRef = doc(db, 'businesses', user.uid);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            setBusinessData(docSnap.data());
-            setNewBio(docSnap.data().bio || '');
-            setPriceList(docSnap.data().priceList || []);
-            setDaysOfOperation(docSnap.data().daysOfOperation || []);
+            const data = docSnap.data();
+            setBusinessData(data);
+            setNewBio(data.bio || '');
+            setPriceList(data.priceList || []);
+            setDaysOfOperation(data.daysOfOperation || []);
           } else {
             console.error('No such document!');
           }
@@ -75,10 +77,13 @@ export default function DashboardPage() {
       const user = auth.currentUser;
       if (user && user.uid) {
         try {
+          const shopId = user.uid; // Assuming the shopId is the same as user.uid
+
+          // Query appointments for the specific shopId
           const appointmentsQuery = query(
             collection(db, 'appointments'),
-            where('shopId', '==', user.uid),
-            orderBy('time')
+            where('shopId', '==', shopId),
+            orderBy('timestamp') // Use timestamp for sorting
           );
 
           const unsubscribe = onSnapshot(appointmentsQuery, (snapshot) => {
@@ -243,21 +248,21 @@ export default function DashboardPage() {
             <div className="mt-4">
               <input
                 type="text"
-                placeholder="Service"
                 value={newPriceService}
                 onChange={(e) => setNewPriceService(e.target.value)}
+                placeholder="Service name"
                 className="p-2 border border-gray-300 rounded-lg mr-2"
               />
               <input
                 type="number"
-                placeholder="Price"
                 value={newPrice}
                 onChange={(e) => setNewPrice(Number(e.target.value))}
+                placeholder="Price"
                 className="p-2 border border-gray-300 rounded-lg mr-2"
               />
               <button
                 onClick={handleAddPrice}
-                className="px-4 py-2 bg-green-500 text-white rounded-lg"
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
               >
                 Add Price
               </button>
@@ -267,32 +272,32 @@ export default function DashboardPage() {
           {/* Days of operation section */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Days of Operation</h2>
-            {daysOfOperation.map((day, index) => (
+            {daysOfOperation.map((item, index) => (
               <div key={index} className="flex justify-between p-2 border-b border-gray-300">
-                <span>{day.day}</span>
-                <span>{day.opening} - {day.closing}</span>
+                <span>{item.day}</span>
+                <span>{item.opening} - {item.closing}</span>
               </div>
             ))}
             <div className="mt-4">
               <input
                 type="text"
-                placeholder="Day"
                 value={newDay}
                 onChange={(e) => setNewDay(e.target.value)}
+                placeholder="Day"
                 className="p-2 border border-gray-300 rounded-lg mr-2"
               />
               <input
                 type="text"
-                placeholder="Opening Time"
                 value={newOpening}
                 onChange={(e) => setNewOpening(e.target.value)}
+                placeholder="Opening time"
                 className="p-2 border border-gray-300 rounded-lg mr-2"
               />
               <input
                 type="text"
-                placeholder="Closing Time"
                 value={newClosing}
                 onChange={(e) => setNewClosing(e.target.value)}
+                placeholder="Closing time"
                 className="p-2 border border-gray-300 rounded-lg mr-2"
               />
               <button
@@ -305,36 +310,34 @@ export default function DashboardPage() {
           </div>
 
           {/* Appointments section */}
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Appointments</h2>
-            <button
-              onClick={handleOpenAppointments}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-            >
-              View Appointments
-            </button>
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-4">
+              Appointments
+              <button
+                onClick={handleOpenAppointments}
+                className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
+              >
+                Show Appointments
+              </button>
+            </h2>
             {appointmentsOpen && (
-              <div className="mt-4">
+              <div>
                 <button
                   onClick={handleCloseAppointments}
-                  className="px-4 py-2 bg-red-500 text-white rounded-lg mb-4"
+                  className="mb-4 px-4 py-2 bg-red-500 text-white rounded-lg"
                 >
                   Close
                 </button>
-                {appointments.length === 0 ? (
-                  <p>No appointments available.</p>
-                ) : (
-                  <ul>
-                    {appointments.map((appointment) => (
-                      <li key={appointment.id} className="p-4 border-b border-gray-300">
-                        <p><strong>Customer:</strong> {appointment.customerName}</p>
-                        <p><strong>Service:</strong> {appointment.service}</p>
-                        <p><strong>Time:</strong> {appointment.time}</p>
-                        <p><strong>Phone:</strong> {appointment.customerPhone}</p>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <ul>
+                  {appointments.map((appointment) => (
+                    <li key={appointment.id} className="mb-2 p-2 border border-gray-300 rounded-lg">
+                      <p><strong>Customer Name:</strong> {appointment.customerName}</p>
+                      <p><strong>Service:</strong> {appointment.service}</p>
+                      <p><strong>Time:</strong> {appointment.time}</p>
+                      <p><strong>Phone:</strong> {appointment.customerPhone}</p>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>

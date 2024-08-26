@@ -1,0 +1,221 @@
+[debug] [2024-08-25T22:56:47.457Z] ----------------------------------------------------------------------
+[debug] [2024-08-25T22:56:47.462Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\USER\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2024-08-25T22:56:47.463Z] CLI Version:   13.15.4
+[debug] [2024-08-25T22:56:47.463Z] Platform:      win32
+[debug] [2024-08-25T22:56:47.464Z] Node Version:  v20.16.0
+[debug] [2024-08-25T22:56:47.464Z] Time:          Sun Aug 25 2024 22:56:47 GMT+0000 (Greenwich Mean Time)
+[debug] [2024-08-25T22:56:47.464Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-08-25T22:56:47.595Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-08-25T22:56:47.596Z] > authorizing via signed-in user (lindaware121@gmail.com)
+[debug] [2024-08-25T22:56:47.596Z] [iam] checking project hair-brotherhood-bfa29 for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]
+[debug] [2024-08-25T22:56:47.599Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions [none]
+[debug] [2024-08-25T22:56:47.599Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions x-goog-quota-user=projects/hair-brotherhood-bfa29
+[debug] [2024-08-25T22:56:47.599Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]}
+[debug] [2024-08-25T22:56:49.032Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions 200
+[debug] [2024-08-25T22:56:49.032Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]}
+[debug] [2024-08-25T22:56:49.033Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 [none]
+[debug] [2024-08-25T22:56:49.623Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 200
+[debug] [2024-08-25T22:56:49.624Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 {"projectId":"hair-brotherhood-bfa29","projectNumber":"666967387867","displayName":"hair-brotherhood","name":"projects/hair-brotherhood-bfa29","resources":{"hostingSite":"hair-brotherhood-bfa29","realtimeDatabaseInstance":"hair-brotherhood-bfa29-default-rtdb","storageBucket":"hair-brotherhood-bfa29.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_0d1ceb1d-a495-4c51-a8e0-63fd47cdb32a"}
+[debug] [2024-08-25T22:56:49.625Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 [none]
+[debug] [2024-08-25T22:56:49.982Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 200
+[debug] [2024-08-25T22:56:49.983Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 {"projectId":"hair-brotherhood-bfa29","projectNumber":"666967387867","displayName":"hair-brotherhood","name":"projects/hair-brotherhood-bfa29","resources":{"hostingSite":"hair-brotherhood-bfa29","realtimeDatabaseInstance":"hair-brotherhood-bfa29-default-rtdb","storageBucket":"hair-brotherhood-bfa29.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_0d1ceb1d-a495-4c51-a8e0-63fd47cdb32a"}
+[debug] [2024-08-25T22:56:55.066Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites pageToken=&pageSize=10
+[debug] [2024-08-25T22:56:56.772Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites 200
+[debug] [2024-08-25T22:56:56.772Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites {"sites":[{"name":"projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29","defaultUrl":"https://hair-brotherhood-bfa29.web.app","appId":"1:666967387867:web:4498921a2d092408f8a6fe","type":"DEFAULT_SITE"}]}
+[debug] [2024-08-25T22:56:56.773Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:666967387867:web:4498921a2d092408f8a6fe/config [none]
+[debug] [2024-08-25T22:56:57.831Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:666967387867:web:4498921a2d092408f8a6fe/config 200
+[debug] [2024-08-25T22:56:57.832Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:666967387867:web:4498921a2d092408f8a6fe/config {"projectId":"hair-brotherhood-bfa29","appId":"1:666967387867:web:4498921a2d092408f8a6fe","databaseURL":"https://hair-brotherhood-bfa29-default-rtdb.firebaseio.com","storageBucket":"hair-brotherhood-bfa29.appspot.com","locationId":"us-central","apiKey":"AIzaSyDozTRpTmaJz3DLU360tAdedXM6DcuykfA","authDomain":"hair-brotherhood-bfa29.firebaseapp.com","messagingSenderId":"666967387867","measurementId":"G-CSKH9V1GB6"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 14.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2024-08-25T22:57:09.598Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29 [none]
+[debug] [2024-08-25T22:57:11.249Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29 200
+[debug] [2024-08-25T22:57:11.249Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29 {"name":"projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29","defaultUrl":"https://hair-brotherhood-bfa29.web.app","appId":"1:666967387867:web:4498921a2d092408f8a6fe","type":"DEFAULT_SITE"}
+[info]   ▲ Next.js 14.2.5
+
+[info]   - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info]  ✓ Compiled successfully
+
+[info]    Linting and checking validity of types ...
+
+[info] Failed to compile.
+
+
+[info] .next/types/app/header/page.ts:28:13
+Type error: Type 'OmitWithTag<HeaderNavProps, keyof PageProps, "default">' does not satisfy the constraint '{ [x: string]: never; }'.
+  Property 'showLoginForm' is incompatible with index signature.
+    Type 'boolean' is not assignable to type 'never'.
+
+  26 |
+  27 | // Check the prop type of the entry function
+> 28 | checkFields<Diff<PageProps, FirstArg<TEntry['default']>, 'default'>>()
+     |             ^
+  29 |
+  30 | // Check the arguments and return type of the generateMetadata function
+  31 | if ('generateMetadata' in entry) {
+
+[debug] [2024-08-25T22:57:53.018Z] Error: ENOENT: no such file or directory, open 'C:\Users\USER\Documents\GitHub\hair-brotherhood-mini-project\.next\export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-08-25T23:57:49.145Z] ----------------------------------------------------------------------
+[debug] [2024-08-25T23:57:49.149Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\USER\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2024-08-25T23:57:49.150Z] CLI Version:   13.15.4
+[debug] [2024-08-25T23:57:49.150Z] Platform:      win32
+[debug] [2024-08-25T23:57:49.150Z] Node Version:  v20.16.0
+[debug] [2024-08-25T23:57:49.150Z] Time:          Sun Aug 25 2024 23:57:49 GMT+0000 (Greenwich Mean Time)
+[debug] [2024-08-25T23:57:49.150Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-08-25T23:57:49.252Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-08-25T23:57:49.253Z] > authorizing via signed-in user (lindaware121@gmail.com)
+[debug] [2024-08-25T23:57:49.253Z] [iam] checking project hair-brotherhood-bfa29 for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]
+[debug] [2024-08-25T23:57:49.255Z] > refreshing access token with scopes: []
+[debug] [2024-08-25T23:57:49.257Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-08-25T23:57:49.258Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-08-25T23:57:49.814Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-08-25T23:57:49.814Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-08-25T23:57:49.821Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions [none]
+[debug] [2024-08-25T23:57:49.821Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions x-goog-quota-user=projects/hair-brotherhood-bfa29
+[debug] [2024-08-25T23:57:49.822Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]}
+[debug] [2024-08-25T23:57:51.165Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions 200
+[debug] [2024-08-25T23:57:51.165Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]}
+[debug] [2024-08-25T23:57:51.166Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 [none]
+[debug] [2024-08-25T23:57:52.152Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 200
+[debug] [2024-08-25T23:57:52.152Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 {"projectId":"hair-brotherhood-bfa29","projectNumber":"666967387867","displayName":"hair-brotherhood","name":"projects/hair-brotherhood-bfa29","resources":{"hostingSite":"hair-brotherhood-bfa29","realtimeDatabaseInstance":"hair-brotherhood-bfa29-default-rtdb","storageBucket":"hair-brotherhood-bfa29.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_0d1ceb1d-a495-4c51-a8e0-63fd47cdb32a"}
+[debug] [2024-08-25T23:57:52.153Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 [none]
+[debug] [2024-08-25T23:57:52.477Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 200
+[debug] [2024-08-25T23:57:52.477Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 {"projectId":"hair-brotherhood-bfa29","projectNumber":"666967387867","displayName":"hair-brotherhood","name":"projects/hair-brotherhood-bfa29","resources":{"hostingSite":"hair-brotherhood-bfa29","realtimeDatabaseInstance":"hair-brotherhood-bfa29-default-rtdb","storageBucket":"hair-brotherhood-bfa29.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_0d1ceb1d-a495-4c51-a8e0-63fd47cdb32a"}
+[debug] [2024-08-25T23:57:57.067Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites pageToken=&pageSize=10
+[debug] [2024-08-25T23:57:58.644Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites 200
+[debug] [2024-08-25T23:57:58.644Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites {"sites":[{"name":"projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29","defaultUrl":"https://hair-brotherhood-bfa29.web.app","appId":"1:666967387867:web:4498921a2d092408f8a6fe","type":"DEFAULT_SITE"}]}
+[debug] [2024-08-25T23:57:58.645Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:666967387867:web:4498921a2d092408f8a6fe/config [none]
+[debug] [2024-08-25T23:57:59.643Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:666967387867:web:4498921a2d092408f8a6fe/config 200
+[debug] [2024-08-25T23:57:59.643Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:666967387867:web:4498921a2d092408f8a6fe/config {"projectId":"hair-brotherhood-bfa29","appId":"1:666967387867:web:4498921a2d092408f8a6fe","databaseURL":"https://hair-brotherhood-bfa29-default-rtdb.firebaseio.com","storageBucket":"hair-brotherhood-bfa29.appspot.com","locationId":"us-central","apiKey":"AIzaSyDozTRpTmaJz3DLU360tAdedXM6DcuykfA","authDomain":"hair-brotherhood-bfa29.firebaseapp.com","messagingSenderId":"666967387867","measurementId":"G-CSKH9V1GB6"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 14.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2024-08-25T23:58:09.762Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29 [none]
+[debug] [2024-08-25T23:58:11.155Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29 200
+[debug] [2024-08-25T23:58:11.155Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29 {"name":"projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29","defaultUrl":"https://hair-brotherhood-bfa29.web.app","appId":"1:666967387867:web:4498921a2d092408f8a6fe","type":"DEFAULT_SITE"}
+[info]   ▲ Next.js 14.2.5
+
+[info]   - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info]  ✓ Compiled successfully
+
+[info]    Linting and checking validity of types ...
+
+[info] Failed to compile.
+
+
+[info] .next/types/app/header/page.ts:28:13
+Type error: Type 'OmitWithTag<HeaderNavProps, keyof PageProps, "default">' does not satisfy the constraint '{ [x: string]: never; }'.
+  Property 'showLoginForm' is incompatible with index signature.
+    Type 'boolean' is not assignable to type 'never'.
+
+  26 |
+  27 | // Check the prop type of the entry function
+> 28 | checkFields<Diff<PageProps, FirstArg<TEntry['default']>, 'default'>>()
+     |             ^
+  29 |
+  30 | // Check the arguments and return type of the generateMetadata function
+  31 | if ('generateMetadata' in entry) {
+
+[debug] [2024-08-25T23:58:33.242Z] Error: ENOENT: no such file or directory, open 'C:\Users\USER\Documents\GitHub\hair-brotherhood-mini-project\.next\export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2024-08-26T00:15:23.345Z] ----------------------------------------------------------------------
+[debug] [2024-08-26T00:15:23.349Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\USER\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2024-08-26T00:15:23.350Z] CLI Version:   13.15.4
+[debug] [2024-08-26T00:15:23.350Z] Platform:      win32
+[debug] [2024-08-26T00:15:23.350Z] Node Version:  v20.16.0
+[debug] [2024-08-26T00:15:23.351Z] Time:          Mon Aug 26 2024 00:15:23 GMT+0000 (Greenwich Mean Time)
+[debug] [2024-08-26T00:15:23.351Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-08-26T00:15:23.466Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-08-26T00:15:23.467Z] > authorizing via signed-in user (lindaware121@gmail.com)
+[debug] [2024-08-26T00:15:23.467Z] [iam] checking project hair-brotherhood-bfa29 for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]
+[debug] [2024-08-26T00:15:23.470Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions [none]
+[debug] [2024-08-26T00:15:23.471Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions x-goog-quota-user=projects/hair-brotherhood-bfa29
+[debug] [2024-08-26T00:15:23.471Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]}
+[debug] [2024-08-26T00:15:24.955Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions 200
+[debug] [2024-08-26T00:15:24.955Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/hair-brotherhood-bfa29:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update"]}
+[debug] [2024-08-26T00:15:24.956Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 [none]
+[debug] [2024-08-26T00:15:25.586Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 200
+[debug] [2024-08-26T00:15:25.587Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 {"projectId":"hair-brotherhood-bfa29","projectNumber":"666967387867","displayName":"hair-brotherhood","name":"projects/hair-brotherhood-bfa29","resources":{"hostingSite":"hair-brotherhood-bfa29","realtimeDatabaseInstance":"hair-brotherhood-bfa29-default-rtdb","storageBucket":"hair-brotherhood-bfa29.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_0d1ceb1d-a495-4c51-a8e0-63fd47cdb32a"}
+[debug] [2024-08-26T00:15:25.588Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 [none]
+[debug] [2024-08-26T00:15:25.910Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 200
+[debug] [2024-08-26T00:15:25.911Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29 {"projectId":"hair-brotherhood-bfa29","projectNumber":"666967387867","displayName":"hair-brotherhood","name":"projects/hair-brotherhood-bfa29","resources":{"hostingSite":"hair-brotherhood-bfa29","realtimeDatabaseInstance":"hair-brotherhood-bfa29-default-rtdb","storageBucket":"hair-brotherhood-bfa29.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_0d1ceb1d-a495-4c51-a8e0-63fd47cdb32a"}
+[debug] [2024-08-26T00:15:30.278Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites pageToken=&pageSize=10
+[debug] [2024-08-26T00:15:31.861Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites 200
+[debug] [2024-08-26T00:15:31.861Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites {"sites":[{"name":"projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29","defaultUrl":"https://hair-brotherhood-bfa29.web.app","appId":"1:666967387867:web:4498921a2d092408f8a6fe","type":"DEFAULT_SITE"}]}
+[debug] [2024-08-26T00:15:31.862Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:666967387867:web:4498921a2d092408f8a6fe/config [none]
+[debug] [2024-08-26T00:15:33.105Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:666967387867:web:4498921a2d092408f8a6fe/config 200
+[debug] [2024-08-26T00:15:33.105Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:666967387867:web:4498921a2d092408f8a6fe/config {"projectId":"hair-brotherhood-bfa29","appId":"1:666967387867:web:4498921a2d092408f8a6fe","databaseURL":"https://hair-brotherhood-bfa29-default-rtdb.firebaseio.com","storageBucket":"hair-brotherhood-bfa29.appspot.com","locationId":"us-central","apiKey":"AIzaSyDozTRpTmaJz3DLU360tAdedXM6DcuykfA","authDomain":"hair-brotherhood-bfa29.firebaseapp.com","messagingSenderId":"666967387867","measurementId":"G-CSKH9V1GB6"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 14.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2024-08-26T00:15:42.784Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29 [none]
+[debug] [2024-08-26T00:15:44.228Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29 200
+[debug] [2024-08-26T00:15:44.228Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29 {"name":"projects/hair-brotherhood-bfa29/sites/hair-brotherhood-bfa29","defaultUrl":"https://hair-brotherhood-bfa29.web.app","appId":"1:666967387867:web:4498921a2d092408f8a6fe","type":"DEFAULT_SITE"}
+[info]   ▲ Next.js 14.2.5
+
+[info]   - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info]  ✓ Compiled successfully
+
+[info]    Linting and checking validity of types ...
+
+[info] Failed to compile.
+
+
+[info] .next/types/app/header/page.ts:28:13
+Type error: Type 'OmitWithTag<HeaderNavProps, keyof PageProps, "default">' does not satisfy the constraint '{ [x: string]: never; }'.
+  Property 'showLoginForm' is incompatible with index signature.
+    Type 'boolean' is not assignable to type 'never'.
+
+  26 |
+  27 | // Check the prop type of the entry function
+> 28 | checkFields<Diff<PageProps, FirstArg<TEntry['default']>, 'default'>>()
+     |             ^
+  29 |
+  30 | // Check the arguments and return type of the generateMetadata function
+  31 | if ('generateMetadata' in entry) {
+
+[debug] [2024-08-26T00:16:08.057Z] Error: ENOENT: no such file or directory, open 'C:\Users\USER\Documents\GitHub\hair-brotherhood-mini-project\.next\export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.

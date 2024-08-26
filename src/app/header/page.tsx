@@ -29,8 +29,6 @@ const HeaderNav: FC<HeaderNavProps> = ({ showLoginForm, onLoginClick }) => {
           {!showLoginForm && (
             <li onClick={onLoginClick}>Log In</li>
           )}
-          <li><a href="#">Partners</a></li>
-          <li><a href="#">Contact Us</a></li>
         </ul>
       </div>
     </div>
