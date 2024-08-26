@@ -3,9 +3,9 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot } from 'firebase/firestore';
-import { db } from '../../firebase/config'; // Adjust the path as needed
+import { db } from '../../firebase/config';
 import Image from 'next/image';
-import Header from '@/app/header/header'; // Adjust the path as needed
+import Header from '@/app/header/header';
 
 interface DayOfOperation {
   day: string;
@@ -37,7 +37,7 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
   const [chatOpen, setChatOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<any[]>([]);
-  const [user, setUser] = useState<{ uid: string }>({ uid: 'testUserId' }); // Replace with actual user state
+  const [user, setUser] = useState<{ uid: string }>({ uid: 'testUserId' });
   const [appointmentOpen, setAppointmentOpen] = useState<boolean>(false);
   const [service, setService] = useState<string>('');
   const [time, setTime] = useState<string>('');
@@ -47,9 +47,8 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     const fetchShopData = async () => {
       try {
-        if (!shopId) {
-          throw new Error('Shop ID is missing');
-        }
+        if (!shopId) throw new Error('Shop ID is missing');
+
         const docRef = doc(db, 'businesses', shopId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -77,7 +76,7 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
       );
 
       const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
-        const fetchedMessages = snapshot.docs.map(doc => doc.data());
+        const fetchedMessages = snapshot.docs.map((doc) => doc.data());
         setMessages(fetchedMessages);
       });
 
@@ -101,34 +100,11 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const handleMessageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setMessage(e.target.value);
-  };
-
-  const handleOpenChat = () => {
-    setChatOpen(true);
-  };
-
-  const handleCloseChat = () => {
-    setChatOpen(false);
-  };
-
-  const handleOpenAppointment = () => {
-    setAppointmentOpen(true);
-  };
-
+  const handleOpenAppointment = () => setAppointmentOpen(true);
   const handleCloseAppointment = () => {
     setAppointmentOpen(false);
     setService('');
     setTime('');
-  };
-
-  const handleServiceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setService(e.target.value);
-  };
-
-  const handleTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setTime(e.target.value);
   };
 
   const handleBookAppointment = async (e: FormEvent<HTMLFormElement>) => {
@@ -149,22 +125,14 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!shop) {
-    return <div>No shop data found.</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (!shop) return <div>No shop data found.</div>;
 
   return (
     <div className="min-h-screen flex flex-col items-center p-8">
-      <Header show={true} /> {/* Adjust header visibility if needed */}
+      <Header show={true} />
 
-      {/* Main Container */}
       <div className="w-full max-w-screen-lg mx-auto mt-[60px]">
-
-        {/* Shop Name and Contact */}
         <div className="text-center mb-[10px] flex space-x-6">
           <h1 className="text-3xl font-bold mb-2">{shop.businessName}</h1>
           <p className="text-lg mb-2">Location: {shop.location}</p>
@@ -172,14 +140,11 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
           <p className="text-lg mb-2">Email: {shop.email}</p>
         </div>
 
-        {/* Gallery */}
         <div className="w-full flex flex-col mb-8">
           <div className="w-full flex mb-4">
-            {/* Main large image */}
             <div className="w-full max-w-[700px] flex-1 mr-4">
               <Image src={shop.businessImageUrls[0]} alt={shop.businessName} width={600} height={450} className="w-full h-auto rounded-xl" />
             </div>
-            {/* Two smaller images */}
             <div className="flex flex-col space-y-4 w-full max-w-[300px] flex-shrink-0">
               {shop.businessImageUrls.length > 1 && (
                 <>
@@ -197,41 +162,34 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
           <p className="text-lg mb-2">Bio: {shop.bio}</p>
         </div>
 
-        {/* Days of Operation */}
         <div className="w-full mb-8">
           <h2 className="text-2xl font-bold mb-4">Days of Operation</h2>
           {shop.daysOfOperation.length > 0 ? (
-            <div>
-              {shop.daysOfOperation.map((day, index) => (
-                <div key={index} className="mb-4">
-                  <p className="text-lg font-bold">{day.day}</p>
-                  <p>{day.opening} - {day.closing}</p>
-                </div>
-              ))}
-            </div>
+            shop.daysOfOperation.map((day, index) => (
+              <div key={index} className="mb-4">
+                <p className="text-lg font-bold">{day.day}</p>
+                <p>{day.opening} - {day.closing}</p>
+              </div>
+            ))
           ) : (
             <p>No days of operation available.</p>
           )}
         </div>
 
-        {/* Price List */}
         <div className="w-full mb-8">
           <h2 className="text-2xl font-bold mb-4">Price List</h2>
           {shop.priceList.length > 0 ? (
-            <div>
-              {shop.priceList.map((item, index) => (
-                <div key={index} className="mb-4">
-                  <p className="text-lg font-bold">{item.service}</p>
-                  <p>${item.price}</p>
-                </div>
-              ))}
-            </div>
+            shop.priceList.map((item, index) => (
+              <div key={index} className="mb-4">
+                <p className="text-lg font-bold">{item.service}</p>
+                <p>${item.price}</p>
+              </div>
+            ))
           ) : (
             <p>No price list available.</p>
           )}
         </div>
 
-        {/* Booking and Chat */}
         <div className="w-[700px] flex justify-between mb-8">
           <button
             onClick={handleOpenAppointment}
@@ -253,7 +211,7 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
                   id="service"
                   type="text"
                   value={service}
-                  onChange={handleServiceChange}
+                  onChange={(e) => setService(e.target.value)}
                   className="border border-gray-300 p-2 rounded-lg w-full"
                   required
                 />
@@ -264,7 +222,7 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
                   id="time"
                   type="text"
                   value={time}
-                  onChange={handleTimeChange}
+                  onChange={(e) => setTime(e.target.value)}
                   className="border border-gray-300 p-2 rounded-lg w-full"
                   required
                 />
@@ -278,7 +236,7 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
               <button
                 type="button"
                 onClick={handleCloseAppointment}
-                className="mt-2 bg-gray-300 text-black py-2 px-4 rounded-lg w-full"
+                className="bg-red-500 text-white py-2 px-4 rounded-lg w-full mt-4"
               >
                 Cancel
               </button>

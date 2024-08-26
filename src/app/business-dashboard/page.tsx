@@ -2,7 +2,7 @@
 
 import { useState, useEffect, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/config';
 import Image from 'next/image';
 import BusinessHeader from '../header/business_header';
@@ -28,13 +28,6 @@ interface Appointment {
 export default function DashboardPage() {
   const [businessData, setBusinessData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [chatOpen, setChatOpen] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>('');
-  const [messages, setMessages] = useState<any[]>([]);
-  const [user, setUser] = useState<{ uid: string } | null>(null);
-  const [customerNames, setCustomerNames] = useState<{ [key: string]: string }>({});
-  const [customers, setCustomers] = useState<{ id: string, name: string }[]>([]);
-  const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
   const [appointmentsOpen, setAppointmentsOpen] = useState<boolean>(false);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [newBio, setNewBio] = useState<string>('');
@@ -52,7 +45,6 @@ export default function DashboardPage() {
       try {
         const user = auth.currentUser;
         if (user) {
-          setUser({ uid: user.uid });
           const docRef = doc(db, 'businesses', user.uid);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
@@ -75,46 +67,7 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    if (user && user.uid) {
-      const customersQuery = query(
-        collection(db, 'users'),
-        where('isBusiness', '==', false) // Ensure this field correctly identifies non-business users
-      );
-
-      const unsubscribe = onSnapshot(customersQuery, async (snapshot) => {
-        const customerList: { id: string, name: string }[] = [];
-
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          customerList.push({ id: doc.id, name: data.name });
-        });
-
-        setCustomers(customerList);
-      });
-
-      return () => unsubscribe();
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (selectedCustomer && user && user.uid) {
-      const messagesQuery = query(
-        collection(db, 'messages'),
-        where('receiverId', 'in', [user.uid, selectedCustomer]),
-        where('senderId', 'in', [user.uid, selectedCustomer]),
-        orderBy('timestamp')
-      );
-  
-      const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
-        const fetchedMessages = snapshot.docs.map(doc => doc.data());
-        setMessages(fetchedMessages);
-      });
-  
-      return () => unsubscribe();
-    }
-  }, [selectedCustomer, user]);
-
-  useEffect(() => {
+    const user = auth.currentUser;
     if (user && user.uid) {
       const appointmentsQuery = query(
         collection(db, 'appointments'),
@@ -132,41 +85,7 @@ export default function DashboardPage() {
 
       return () => unsubscribe();
     }
-  }, [user]);
-
-  const handleSendMessage = async () => {
-    if (message.trim() && user && selectedCustomer) {
-      try {
-        await addDoc(collection(db, 'messages'), {
-          senderId: user.uid,
-          receiverId: selectedCustomer,
-          content: message,
-          timestamp: new Date(),
-        });
-        setMessage('');
-      } catch (error) {
-        console.error('Error sending message:', error);
-      }
-    }
-  };
-
-  const handleMessageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setMessage(e.target.value);
-  };
-
-  const handleOpenChat = () => {
-    setChatOpen(true);
-  };
-
-  const handleCloseChat = () => {
-    setChatOpen(false);
-    setSelectedCustomer(null);
-  };
-
-  const handleSelectCustomer = (customerId: string) => {
-    setSelectedCustomer(customerId);
-    setChatOpen(true);
-  };
+  }, []);
 
   const handleOpenAppointments = () => {
     setAppointmentsOpen(true);
@@ -181,6 +100,7 @@ export default function DashboardPage() {
       try {
         const updatedPriceList = [...priceList, { service: newPriceService, price: newPrice }];
         setPriceList(updatedPriceList);
+        const user = auth.currentUser;
         if (user) {
           await updateDoc(doc(db, 'businesses', user.uid), { priceList: updatedPriceList });
         }
@@ -197,6 +117,7 @@ export default function DashboardPage() {
       try {
         const updatedDays = [...daysOfOperation, { day: newDay, opening: newOpening, closing: newClosing }];
         setDaysOfOperation(updatedDays);
+        const user = auth.currentUser;
         if (user) {
           await updateDoc(doc(db, 'businesses', user.uid), { daysOfOperation: updatedDays });
         }
@@ -212,6 +133,7 @@ export default function DashboardPage() {
   const handleBioChange = async () => {
     if (newBio.trim()) {
       try {
+        const user = auth.currentUser;
         if (user) {
           await updateDoc(doc(db, 'businesses', user.uid), { bio: newBio });
         }
@@ -236,7 +158,6 @@ export default function DashboardPage() {
       <BusinessHeader show={true} />
 
       <div className="pt-16 p-8">
-
         <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow">
           <div className="flex items-center mb-4">
             <h1 className="text-4xl font-bold mr-4">{businessName}</h1>
@@ -338,14 +259,14 @@ export default function DashboardPage() {
                   className="p-2 border border-gray-300 rounded-lg mr-2"
                 />
                 <input
-                  type="text"
+                  type="time"
                   placeholder="Opening Time"
                   value={newOpening}
                   onChange={(e) => setNewOpening(e.target.value)}
                   className="p-2 border border-gray-300 rounded-lg mr-2"
                 />
                 <input
-                  type="text"
+                  type="time"
                   placeholder="Closing Time"
                   value={newClosing}
                   onChange={(e) => setNewClosing(e.target.value)}
@@ -353,7 +274,7 @@ export default function DashboardPage() {
                 />
                 <button
                   onClick={handleAddDay}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                  className="px-4 py-2 bg-purple-500 text-white rounded-lg"
                 >
                   Add Day
                 </button>
@@ -361,26 +282,38 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="flex justify-between">
+          <div className="mb-8">
             <button
               onClick={handleOpenAppointments}
-              className="px-4 py-2 bg-gray-500 text-white rounded-lg"
+              className="px-4 py-2 bg-yellow-500 text-white rounded-lg"
             >
               View Appointments
             </button>
           </div>
+
           {appointmentsOpen && (
-            <div className="fixed top-0 right-0 w-full max-w-md bg-white shadow-lg rounded-lg p-6">
-              <button onClick={handleCloseAppointments} className="absolute top-2 right-2 text-gray-500">&times;</button>
-              <h3 className="text-xl font-bold mb-4">Appointments</h3>
-              <div className="overflow-y-auto h-64">
-                {appointments.map((appointment) => (
-                  <div key={appointment.id} className="mb-4 p-4 border border-gray-300 rounded-lg">
-                    <h4 className="text-lg font-semibold">{appointment.customerName}</h4>
-                    <p>{appointment.service}</p>
-                    <p>{appointment.time}</p>
+            <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+              <div className="bg-white p-8 rounded-lg shadow-lg max-w-3xl w-full">
+                <h2 className="text-2xl font-bold mb-4">Appointments</h2>
+                {appointments.length > 0 ? (
+                  <div>
+                    {appointments.map((appointments) => (
+                      <div key={appointments.id} className="flex justify-between p-4 border-b border-gray-300">
+                        <span>{appointments.customerName}</span>
+                        <span>{appointments.service}</span>
+                        <span>{new Date(appointments.time).toLocaleString()}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                ) : (
+                  <p>No appointments scheduled.</p>
+                )}
+                <button
+                  onClick={handleCloseAppointments}
+                  className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg"
+                >
+                  Close
+                </button>
               </div>
             </div>
           )}
