@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, orderBy, onSnapshot, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/config';
 import Image from 'next/image';
 import BusinessHeader from '../header/business_header';
 
+// Define interfaces for the data structures used
 interface PriceItem {
   service: string;
   price: number;
@@ -23,6 +24,7 @@ interface Appointment {
   customerName: string;
   service: string;
   time: string;
+  customerPhone: string;
 }
 
 export default function DashboardPage() {
@@ -40,6 +42,7 @@ export default function DashboardPage() {
   const [daysOfOperation, setDaysOfOperation] = useState<DayOfOperation[]>([]);
   const router = useRouter();
 
+  // Fetch business data from Firestore when the component mounts
   useEffect(() => {
     const fetchBusinessData = async () => {
       try {
@@ -66,35 +69,47 @@ export default function DashboardPage() {
     fetchBusinessData();
   }, []);
 
+  // Fetch appointments for the specific shop and set up a real-time listener
   useEffect(() => {
-    const user = auth.currentUser;
-    if (user && user.uid) {
-      const appointmentsQuery = query(
-        collection(db, 'appointments'),
-        where('barberId', '==', user.uid),
-        orderBy('time')
-      );
+    const fetchAppointments = async () => {
+      const user = auth.currentUser;
+      if (user && user.uid) {
+        try {
+          const appointmentsQuery = query(
+            collection(db, 'appointments'),
+            where('shopId', '==', user.uid),
+            orderBy('time')
+          );
 
-      const unsubscribe = onSnapshot(appointmentsQuery, (snapshot) => {
-        const fetchedAppointments = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Appointment[];
-        setAppointments(fetchedAppointments);
-      });
+          const unsubscribe = onSnapshot(appointmentsQuery, (snapshot) => {
+            const fetchedAppointments = snapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data()
+            })) as Appointment[];
+            setAppointments(fetchedAppointments);
+          });
 
-      return () => unsubscribe();
-    }
+          return () => unsubscribe();
+        } catch (error) {
+          console.error('Error fetching appointments:', error);
+        }
+      }
+    };
+
+    fetchAppointments();
   }, []);
 
+  // Handle the opening of the appointments list
   const handleOpenAppointments = () => {
     setAppointmentsOpen(true);
   };
 
+  // Handle the closing of the appointments list
   const handleCloseAppointments = () => {
     setAppointmentsOpen(false);
   };
 
+  // Handle adding a new price to the price list
   const handleAddPrice = async () => {
     if (newPriceService.trim() && newPrice !== '' && typeof newPrice === 'number') {
       try {
@@ -112,6 +127,7 @@ export default function DashboardPage() {
     }
   };
 
+  // Handle adding a new day to the days of operation
   const handleAddDay = async () => {
     if (newDay.trim() && newOpening.trim() && newClosing.trim()) {
       try {
@@ -130,6 +146,7 @@ export default function DashboardPage() {
     }
   };
 
+  // Handle updating the business bio
   const handleBioChange = async () => {
     if (newBio.trim()) {
       try {
@@ -143,10 +160,12 @@ export default function DashboardPage() {
     }
   };
 
+  // Display loading message while fetching data
   if (loading) {
     return <div>Loading...</div>;
   }
 
+  // Display message if no business data is found
   if (!businessData) {
     return <div>No business data found.</div>;
   }
@@ -159,6 +178,7 @@ export default function DashboardPage() {
 
       <div className="pt-16 p-8">
         <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow">
+          {/* Display business name and location */}
           <div className="flex items-center mb-4">
             <h1 className="text-4xl font-bold mr-4">{businessName}</h1>
             {location && (
@@ -166,6 +186,7 @@ export default function DashboardPage() {
             )}
           </div>
 
+          {/* Display main business image and additional images */}
           <div className="flex mb-8">
             <div className="flex-1 relative">
               {businessImageUrls.length > 0 && (
@@ -192,6 +213,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* Business bio section */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Business Bio</h2>
             <textarea
@@ -209,6 +231,7 @@ export default function DashboardPage() {
             </button>
           </div>
 
+          {/* Price list section */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Price List</h2>
             {priceList.map((item, index) => (
@@ -241,82 +264,80 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* Days of operation section */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Days of Operation</h2>
-            <div>
-              {daysOfOperation.map((day, index) => (
-                <div key={index} className="flex justify-between p-2 border-b border-gray-300">
-                  <span>{day.day}</span>
-                  <span>{day.opening} - {day.closing}</span>
-                </div>
-              ))}
-              <div className="mt-4">
-                <input
-                  type="text"
-                  placeholder="Day"
-                  value={newDay}
-                  onChange={(e) => setNewDay(e.target.value)}
-                  className="p-2 border border-gray-300 rounded-lg mr-2"
-                />
-                <input
-                  type="time"
-                  placeholder="Opening Time"
-                  value={newOpening}
-                  onChange={(e) => setNewOpening(e.target.value)}
-                  className="p-2 border border-gray-300 rounded-lg mr-2"
-                />
-                <input
-                  type="time"
-                  placeholder="Closing Time"
-                  value={newClosing}
-                  onChange={(e) => setNewClosing(e.target.value)}
-                  className="p-2 border border-gray-300 rounded-lg mr-2"
-                />
-                <button
-                  onClick={handleAddDay}
-                  className="px-4 py-2 bg-purple-500 text-white rounded-lg"
-                >
-                  Add Day
-                </button>
+            {daysOfOperation.map((day, index) => (
+              <div key={index} className="flex justify-between p-2 border-b border-gray-300">
+                <span>{day.day}</span>
+                <span>{day.opening} - {day.closing}</span>
               </div>
+            ))}
+            <div className="mt-4">
+              <input
+                type="text"
+                placeholder="Day"
+                value={newDay}
+                onChange={(e) => setNewDay(e.target.value)}
+                className="p-2 border border-gray-300 rounded-lg mr-2"
+              />
+              <input
+                type="text"
+                placeholder="Opening Time"
+                value={newOpening}
+                onChange={(e) => setNewOpening(e.target.value)}
+                className="p-2 border border-gray-300 rounded-lg mr-2"
+              />
+              <input
+                type="text"
+                placeholder="Closing Time"
+                value={newClosing}
+                onChange={(e) => setNewClosing(e.target.value)}
+                className="p-2 border border-gray-300 rounded-lg mr-2"
+              />
+              <button
+                onClick={handleAddDay}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+              >
+                Add Day
+              </button>
             </div>
           </div>
 
-          <div className="mb-8">
+          {/* Appointments section */}
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Appointments</h2>
             <button
               onClick={handleOpenAppointments}
-              className="px-4 py-2 bg-yellow-500 text-white rounded-lg"
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg"
             >
               View Appointments
             </button>
-          </div>
-
-          {appointmentsOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-              <div className="bg-white p-8 rounded-lg shadow-lg max-w-3xl w-full">
-                <h2 className="text-2xl font-bold mb-4">Appointments</h2>
-                {appointments.length > 0 ? (
-                  <div>
-                    {appointments.map((appointments) => (
-                      <div key={appointments.id} className="flex justify-between p-4 border-b border-gray-300">
-                        <span>{appointments.customerName}</span>
-                        <span>{appointments.service}</span>
-                        <span>{new Date(appointments.time).toLocaleString()}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p>No appointments scheduled.</p>
-                )}
+            {appointmentsOpen && (
+              <div className="mt-4">
                 <button
                   onClick={handleCloseAppointments}
-                  className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg"
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg mb-4"
                 >
                   Close
                 </button>
+                {appointments.length === 0 ? (
+                  <p>No appointments available.</p>
+                ) : (
+                  <ul>
+                    {appointments.map((appointment) => (
+                      <li key={appointment.id} className="p-4 border-b border-gray-300">
+                        <p><strong>Customer:</strong> {appointment.customerName}</p>
+                        <p><strong>Service:</strong> {appointment.service}</p>
+                        <p><strong>Time:</strong> {appointment.time}</p>
+                        <p><strong>Phone:</strong> {appointment.customerPhone}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 import Image from 'next/image';
 import Header from '@/app/header/header';
@@ -34,13 +34,12 @@ interface Shop {
 const ShopPage = ({ params }: { params: { id: string } }) => {
   const [shop, setShop] = useState<Shop | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [chatOpen, setChatOpen] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>('');
-  const [messages, setMessages] = useState<any[]>([]);
-  const [user, setUser] = useState<{ uid: string }>({ uid: 'testUserId' });
+  const [user, setUser] = useState<{ uid: string }>({ uid: 'testUserId' }); // Simulated user for testing
   const [appointmentOpen, setAppointmentOpen] = useState<boolean>(false);
   const [service, setService] = useState<string>('');
   const [time, setTime] = useState<string>('');
+  const [customerName, setCustomerName] = useState<string>(''); // Added state for customer name
+  const [customerPhone, setCustomerPhone] = useState<string>(''); // Added state for customer phone number
   const router = useRouter();
   const shopId = params.id;
 
@@ -66,56 +65,26 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
     fetchShopData();
   }, [shopId]);
 
-  useEffect(() => {
-    if (shopId && user && user.uid) {
-      const messagesQuery = query(
-        collection(db, 'messages'),
-        where('receiverId', 'in', [shopId, user.uid]),
-        where('senderId', 'in', [shopId, user.uid]),
-        orderBy('timestamp')
-      );
-
-      const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
-        const fetchedMessages = snapshot.docs.map((doc) => doc.data());
-        setMessages(fetchedMessages);
-      });
-
-      return () => unsubscribe();
-    }
-  }, [shopId, user]);
-
-  const handleSendMessage = async () => {
-    if (message.trim()) {
-      try {
-        await addDoc(collection(db, 'messages'), {
-          senderId: user.uid,
-          receiverId: shopId,
-          content: message,
-          timestamp: new Date(),
-        });
-        setMessage('');
-      } catch (error) {
-        console.error('Error sending message:', error);
-      }
-    }
-  };
-
   const handleOpenAppointment = () => setAppointmentOpen(true);
   const handleCloseAppointment = () => {
     setAppointmentOpen(false);
     setService('');
     setTime('');
+    setCustomerName(''); // Reset customer name
+    setCustomerPhone(''); // Reset customer phone number
   };
 
   const handleBookAppointment = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (service.trim() && time.trim()) {
+    if (service.trim() && time.trim() && customerName.trim() && customerPhone.trim()) {
       try {
         await addDoc(collection(db, 'appointments'), {
           shopId,
           userId: user.uid,
           service,
           time,
+          customerName, // Include customer name in the document
+          customerPhone, // Include customer phone number in the document
           timestamp: new Date(),
         });
         handleCloseAppointment();
@@ -205,6 +174,28 @@ const ShopPage = ({ params }: { params: { id: string } }) => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
             <h3 className="text-xl font-bold mb-4">Book an Appointment</h3>
             <form onSubmit={handleBookAppointment}>
+              <div className="mb-4">
+                <label htmlFor="customerName" className="block text-sm font-medium mb-1">Name</label>
+                <input
+                  id="customerName"
+                  type="text"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  className="border border-gray-300 p-2 rounded-lg w-full"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="customerPhone" className="block text-sm font-medium mb-1">Phone Number</label>
+                <input
+                  id="customerPhone"
+                  type="text"
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  className="border border-gray-300 p-2 rounded-lg w-full"
+                  required
+                />
+              </div>
               <div className="mb-4">
                 <label htmlFor="service" className="block text-sm font-medium mb-1">Service</label>
                 <input
